@@ -20,7 +20,11 @@ const isGrayscale = (hex: string): boolean => {
     
     // RGB値の差が小さい場合はグレースケールと判定
     const maxDiff = Math.max(Math.abs(r - g), Math.abs(g - b), Math.abs(r - b));
-    return maxDiff < 10;
+    const isGray = maxDiff < 10;
+    
+    console.log(`isGrayscale check for ${hex}: R=${r}, G=${g}, B=${b}, maxDiff=${maxDiff}, isGray=${isGray}`);
+    
+    return isGray;
 };
 
 // グレースケール色用の特別なカラーパレットを生成する関数
@@ -113,14 +117,21 @@ const generateGrayscaleColors = (primaryColor: string) => {
 
 // プライマリカラーからカラーパレットを生成する関数
 export const generateColorsFromPrimary = (primaryColor: string) => {
+    console.log('generateColorsFromPrimary called with:', primaryColor);
+    
     // グレースケール色の場合は特別な処理
     if (isGrayscale(primaryColor)) {
+        console.log('Detected as grayscale:', primaryColor);
         return generateGrayscaleColors(primaryColor);
     }
     
+    console.log('Using Material Color Utilities for:', primaryColor);
     const materialTheme: MaterialTheme = themeFromSourceColor(
         argbFromHex(primaryColor)
     )
+    
+    const generatedPrimary = argbToHex(materialTheme.palettes.primary.tone(40));
+    console.log('Generated primary color:', generatedPrimary);
 
     return {
         light: {

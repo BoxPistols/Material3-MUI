@@ -6,9 +6,7 @@ import {
   Box, 
   IconButton, 
   Tooltip,
-  Popover,
-  Paper,
-  TextField
+  Popover
 } from '@mui/material';
 import { 
   DarkMode, 
@@ -23,13 +21,13 @@ import {
 } from '@mui/icons-material';
 import { Link, useLocation } from '@tanstack/react-router';
 import { useTheme } from '../contexts/ThemeContext';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import AdvancedColorPicker from './AdvancedColorPicker';
 
 const AppNavigation: React.FC = () => {
   const location = useLocation();
   const { mode, toggleMode, primaryColor, setPrimaryColor } = useTheme();
   const [colorPickerAnchor, setColorPickerAnchor] = useState<HTMLButtonElement | null>(null);
-  const [hexInput, setHexInput] = useState<string>(primaryColor);
 
   const navItems = [
     { path: '/', label: 'ホーム', icon: Home },
@@ -48,36 +46,9 @@ const AppNavigation: React.FC = () => {
     setColorPickerAnchor(null);
   };
 
-  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newColor = event.target.value;
-    // カラーピッカー（type="color"）からの場合は直接設定
-    if (event.target.type === 'color') {
-      setPrimaryColor(newColor);
-    } else {
-      // HEXテキストフィールドからの場合は検証
-      if (/^#[0-9A-Fa-f]{6}$/.test(newColor)) {
-        setPrimaryColor(newColor);
-      }
-    }
+  const handleColorChange = (newColor: string) => {
+    setPrimaryColor(newColor);
   };
-
-  const handleHexInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newColor = event.target.value;
-    setHexInput(newColor);
-    
-    // HEX形式の検証（#を含む7文字、または#なしの6文字）
-    if (newColor.startsWith('#') && /^#[0-9A-Fa-f]{6}$/.test(newColor)) {
-      setPrimaryColor(newColor);
-    } else if (!newColor.startsWith('#') && /^[0-9A-Fa-f]{6}$/.test(newColor)) {
-      const colorWithHash = '#' + newColor;
-      setPrimaryColor(colorWithHash);
-    }
-  };
-
-  // primaryColorが変更されたときにhexInputも更新
-  useEffect(() => {
-    setHexInput(primaryColor);
-  }, [primaryColor]);
 
   const isColorPickerOpen = Boolean(colorPickerAnchor);
 
