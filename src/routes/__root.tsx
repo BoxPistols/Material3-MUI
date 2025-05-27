@@ -1,19 +1,31 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { ThemeProvider } from "@mui/material/styles"
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles"
 import { CssBaseline, Box } from "@mui/material"
-import { theme } from "../theme"
+import { createMaterialTheme } from "../theme"
+import { ThemeProvider, useTheme } from "../contexts/ThemeContext"
 import AppNavigation from "../components/AppNavigation"
 
-export const Route = createRootRoute({
-  component: () => (
-    <ThemeProvider theme={theme}>
+const AppContent: React.FC = () => {
+  const { mode } = useTheme();
+  const theme = createMaterialTheme(mode);
+
+  return (
+    <MuiThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ minHeight: "100vh", backgroundColor: "background.default" }}>
         <AppNavigation />
         <Outlet />
       </Box>
       <TanStackRouterDevtools />
+    </MuiThemeProvider>
+  );
+};
+
+export const Route = createRootRoute({
+  component: () => (
+    <ThemeProvider>
+      <AppContent />
     </ThemeProvider>
   ),
 }) 

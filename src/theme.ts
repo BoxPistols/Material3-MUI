@@ -1,175 +1,235 @@
-import { createTheme, type CSSObject } from '@mui/material/styles'
-import type { ButtonProps } from '@mui/material'
+import { createTheme } from '@mui/material/styles'
+import {
+  themeFromSourceColor,
+  argbFromHex,
+  hexFromArgb,
+  type Theme as MaterialTheme,
+} from '@material/material-color-utilities'
 
-// Material Design 3 カラーパレット（直接定義）
+// プライマリカラー（Material Design 3のPurple）
+const PRIMARY_COLOR = '#456'
+
+// Material Color Utilitiesでテーマを生成
+const materialTheme: MaterialTheme = themeFromSourceColor(argbFromHex(PRIMARY_COLOR))
+
+// ARGBからHEXに変換するヘルパー関数
+const argbToHex = (argb: number): string => hexFromArgb(argb)
+
+// ライトテーマのカラーパレット
+export const lightColors = {
+    primary: argbToHex(materialTheme.palettes.primary.tone(40)),
+    onPrimary: argbToHex(materialTheme.palettes.primary.tone(100)),
+    primaryContainer: argbToHex(materialTheme.palettes.primary.tone(90)),
+    onPrimaryContainer: argbToHex(materialTheme.palettes.primary.tone(10)),
+    
+    secondary: argbToHex(materialTheme.palettes.secondary.tone(40)),
+    onSecondary: argbToHex(materialTheme.palettes.secondary.tone(100)),
+    secondaryContainer: argbToHex(materialTheme.palettes.secondary.tone(90)),
+    onSecondaryContainer: argbToHex(materialTheme.palettes.secondary.tone(10)),
+    
+    tertiary: argbToHex(materialTheme.palettes.tertiary.tone(40)),
+    onTertiary: argbToHex(materialTheme.palettes.tertiary.tone(100)),
+    tertiaryContainer: argbToHex(materialTheme.palettes.tertiary.tone(90)),
+    onTertiaryContainer: argbToHex(materialTheme.palettes.tertiary.tone(10)),
+    
+    error: argbToHex(materialTheme.palettes.error.tone(40)),
+    onError: argbToHex(materialTheme.palettes.error.tone(100)),
+    errorContainer: argbToHex(materialTheme.palettes.error.tone(90)),
+    onErrorContainer: argbToHex(materialTheme.palettes.error.tone(10)),
+    
+    background: argbToHex(materialTheme.palettes.neutral.tone(99)),
+    onBackground: argbToHex(materialTheme.palettes.neutral.tone(10)),
+    surface: argbToHex(materialTheme.palettes.neutral.tone(99)),
+    onSurface: argbToHex(materialTheme.palettes.neutral.tone(10)),
+    surfaceVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(90)),
+    onSurfaceVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(30)),
+    
+    outline: argbToHex(materialTheme.palettes.neutralVariant.tone(50)),
+    outlineVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(80)),
+    shadow: argbToHex(materialTheme.palettes.neutral.tone(0)),
+    scrim: argbToHex(materialTheme.palettes.neutral.tone(0)),
+    
+    inverseSurface: argbToHex(materialTheme.palettes.neutral.tone(20)),
+    inverseOnSurface: argbToHex(materialTheme.palettes.neutral.tone(95)),
+    inversePrimary: argbToHex(materialTheme.palettes.primary.tone(80)),
+}
+
+// ダークテーマのカラーパレット
+export const darkColors = {
+    primary: argbToHex(materialTheme.palettes.primary.tone(80)),
+    onPrimary: argbToHex(materialTheme.palettes.primary.tone(20)),
+    primaryContainer: argbToHex(materialTheme.palettes.primary.tone(30)),
+    onPrimaryContainer: argbToHex(materialTheme.palettes.primary.tone(90)),
+    
+    secondary: argbToHex(materialTheme.palettes.secondary.tone(80)),
+    onSecondary: argbToHex(materialTheme.palettes.secondary.tone(20)),
+    secondaryContainer: argbToHex(materialTheme.palettes.secondary.tone(30)),
+    onSecondaryContainer: argbToHex(materialTheme.palettes.secondary.tone(90)),
+    
+    tertiary: argbToHex(materialTheme.palettes.tertiary.tone(80)),
+    onTertiary: argbToHex(materialTheme.palettes.tertiary.tone(20)),
+    tertiaryContainer: argbToHex(materialTheme.palettes.tertiary.tone(30)),
+    onTertiaryContainer: argbToHex(materialTheme.palettes.tertiary.tone(90)),
+    
+    error: argbToHex(materialTheme.palettes.error.tone(80)),
+    onError: argbToHex(materialTheme.palettes.error.tone(20)),
+    errorContainer: argbToHex(materialTheme.palettes.error.tone(30)),
+    onErrorContainer: argbToHex(materialTheme.palettes.error.tone(90)),
+    
+    background: argbToHex(materialTheme.palettes.neutral.tone(10)),
+    onBackground: argbToHex(materialTheme.palettes.neutral.tone(90)),
+    surface: argbToHex(materialTheme.palettes.neutral.tone(10)),
+    onSurface: argbToHex(materialTheme.palettes.neutral.tone(90)),
+    surfaceVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(30)),
+    onSurfaceVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(80)),
+    
+    outline: argbToHex(materialTheme.palettes.neutralVariant.tone(60)),
+    outlineVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(30)),
+    shadow: argbToHex(materialTheme.palettes.neutral.tone(0)),
+    scrim: argbToHex(materialTheme.palettes.neutral.tone(0)),
+    
+    inverseSurface: argbToHex(materialTheme.palettes.neutral.tone(90)),
+    inverseOnSurface: argbToHex(materialTheme.palettes.neutral.tone(20)),
+    inversePrimary: argbToHex(materialTheme.palettes.primary.tone(40)),
+}
+
+// 後方互換性のため
 export const materialColors = {
-    light: {
-        primary: '#65558F',
-        onPrimary: '#FFFFFF',
-        primaryContainer: '#E7DEFF',
-        onPrimaryContainer: '#21005D',
-        secondary: '#625B71',
-        onSecondary: '#FFFFFF',
-        secondaryContainer: '#E8DEF8',
-        onSecondaryContainer: '#1D192B',
-        tertiary: '#7D5260',
-        onTertiary: '#FFFFFF',
-        tertiaryContainer: '#FFD8E4',
-        onTertiaryContainer: '#31111D',
-        error: '#BA1A1A',
-        onError: '#FFFFFF',
-        errorContainer: '#FFDAD6',
-        onErrorContainer: '#410002',
-        background: '#FFFBFE',
-        onBackground: '#1C1B1F',
-        surface: '#FFFBFE',
-        onSurface: '#1C1B1F',
-        surfaceVariant: '#E7E0EC',
-        onSurfaceVariant: '#49454F',
-        outline: '#79747E',
-        outlineVariant: '#CAC4D0',
-        shadow: '#000000',
-        scrim: '#000000',
-        inverseSurface: '#313033',
-        inverseOnSurface: '#F4EFF4',
-        inversePrimary: '#D0BCFF',
-    },
-    dark: {
-        primary: '#D0BCFF',
-        onPrimary: '#381E72',
-        primaryContainer: '#4F378B',
-        onPrimaryContainer: '#E7DEFF',
-        secondary: '#CCC2DC',
-        onSecondary: '#332D41',
-        secondaryContainer: '#4A4458',
-        onSecondaryContainer: '#E8DEF8',
-        tertiary: '#EFB8C8',
-        onTertiary: '#492532',
-        tertiaryContainer: '#633B48',
-        onTertiaryContainer: '#FFD8E4',
-        error: '#FFB4AB',
-        onError: '#690005',
-        errorContainer: '#93000A',
-        onErrorContainer: '#FFDAD6',
-        background: '#1C1B1F',
-        onBackground: '#E6E1E5',
-        surface: '#1C1B1F',
-        onSurface: '#E6E1E5',
-        surfaceVariant: '#49454F',
-        onSurfaceVariant: '#CAC4D0',
-        outline: '#938F99',
-        outlineVariant: '#49454F',
-        shadow: '#000000',
-        scrim: '#000000',
-        inverseSurface: '#E6E1E5',
-        inverseOnSurface: '#313033',
-        inversePrimary: '#65558F',
-    },
+    light: lightColors,
+    dark: darkColors,
 }
 
-const base = createTheme({
-    palette: {
-        primary: { main: materialColors.light.primary },
-        secondary: { main: materialColors.light.secondary },
-        background: {
-            default: materialColors.light.background,
-            paper: materialColors.light.surface,
+// MUIテーマを作成する関数
+export const createMaterialTheme = (mode: 'light' | 'dark') => {
+    const colors = mode === 'light' ? lightColors : darkColors
+    
+    return createTheme({
+        palette: {
+            mode,
+            primary: {
+                main: colors.primary,
+                contrastText: colors.onPrimary,
+            },
+            secondary: {
+                main: colors.secondary,
+                contrastText: colors.onSecondary,
+            },
+            error: {
+                main: colors.error,
+                contrastText: colors.onError,
+            },
+            background: {
+                default: colors.background,
+                paper: colors.surface,
+            },
+            text: {
+                primary: colors.onSurface,
+                secondary: colors.onSurfaceVariant,
+            },
+            divider: colors.outline,
         },
-        text: {
-            primary: materialColors.light.onSurface,
-            secondary: materialColors.light.onSurfaceVariant,
+        typography: {
+            fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+            button: {
+                textTransform: 'none',
+                fontWeight: 500,
+            },
         },
-        error: { main: materialColors.light.error },
-    },
-})
-
-// 以下のパスを参考に
-// node_modules/@mui/styled-engine/esm/index.d.ts
-type Variant<Props> = {
-    props:
-        | (Props extends {
-              ownerState: infer O
-          }
-              ? Partial<Omit<Props, 'ownerState'> & O>
-              : Partial<Props>)
-        | ((
-              props: Partial<Props> & {
-                  ownerState: Partial<Props>
-              }
-          ) => boolean)
-    style:
-        | CSSObject
-        | ((
-              args: Props extends {
-                  theme: unknown
-              }
-                  ? {
-                        theme: Props['theme']
-                    }
-                  : unknown
-          ) => CSSObject)
-}
-
-type ButtonVariant = Variant<ButtonProps>
-
-const elevated: ButtonVariant = {
-    props: { variant: 'elevated' },
-    style: {
-        backgroundColor: materialColors.light.surface,
-        color: materialColors.light.primary,
-        borderRadius: 40,
-        boxShadow: base.shadows[2],
-    },
-}
-
-const filled: ButtonVariant = {
-    props: { variant: 'filled' },
-    style: {
-        backgroundColor: materialColors.light.primary,
-        color: materialColors.light.onPrimary,
-        borderRadius: 40,
-    },
-}
-
-const tonal: ButtonVariant = {
-    props: { variant: 'tonal' },
-    style: {
-        backgroundColor: materialColors.light.secondaryContainer,
-        color: materialColors.light.onSecondaryContainer,
-        borderRadius: 40,
-    },
-}
-
-const outlined: ButtonVariant = {
-    props: { variant: 'outlined' },
-    style: {
-        borderColor: materialColors.light.outlineVariant,
-        color: materialColors.light.onSurfaceVariant,
-        borderRadius: 40,
-    },
-}
-
-const text: ButtonVariant = {
-    props: { variant: 'text' },
-    style: {
-        borderRadius: 40,
-    },
-}
-
-export const theme = createTheme({
-    palette: base.palette,
-    typography: {
-        button: {
-            textTransform: 'none',
+        shape: {
+            borderRadius: 12,
         },
-    },
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    variants: [elevated, filled, tonal, outlined, text],
+        components: {
+            MuiButton: {
+                styleOverrides: {
+                    root: {
+                        borderRadius: 40,
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        boxShadow: 'none',
+                        '&:hover': {
+                            boxShadow: 'none',
+                        },
+                    },
+                },
+                variants: [
+                    {
+                        props: { variant: 'filled' },
+                        style: {
+                            backgroundColor: colors.primary,
+                            color: colors.onPrimary,
+                            '&:hover': {
+                                backgroundColor: colors.primary,
+                                filter: 'brightness(0.9)',
+                            },
+                            '&:disabled': {
+                                backgroundColor: colors.onSurface + '1F', // 12% opacity
+                                color: colors.onSurface + '61', // 38% opacity
+                            },
+                        },
+                    },
+                    {
+                        props: { variant: 'elevated' },
+                        style: {
+                            backgroundColor: colors.surface,
+                            color: colors.primary,
+                            boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
+                            '&:hover': {
+                                backgroundColor: colors.surface,
+                                filter: 'brightness(0.95)',
+                                boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15)',
+                            },
+                            '&:disabled': {
+                                backgroundColor: colors.onSurface + '1F',
+                                color: colors.onSurface + '61',
+                                boxShadow: 'none',
+                            },
+                        },
+                    },
+                    {
+                        props: { variant: 'tonal' },
+                        style: {
+                            backgroundColor: colors.secondaryContainer,
+                            color: colors.onSecondaryContainer,
+                            '&:hover': {
+                                backgroundColor: colors.secondaryContainer,
+                                filter: 'brightness(0.9)',
+                            },
+                            '&:disabled': {
+                                backgroundColor: colors.onSurface + '1F',
+                                color: colors.onSurface + '61',
+                            },
+                        },
+                    },
+                ],
+            },
+            MuiPaper: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: colors.surface,
+                        color: colors.onSurface,
+                    },
+                },
+            },
+            MuiAppBar: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: colors.surface,
+                        color: colors.onSurface,
+                    },
+                },
+            },
+            MuiCard: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: colors.surface,
+                        color: colors.onSurface,
+                        borderRadius: 12,
+                    },
                 },
             },
         },
-    },
-})
+    })
+}
+
+// デフォルトテーマ（ライトモード）
+export const theme = createMaterialTheme('light')

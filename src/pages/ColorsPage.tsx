@@ -1,6 +1,7 @@
-import { Box, Typography, Paper, Chip, Switch, FormControlLabel, Grid } from '@mui/material';
-import { useState } from 'react';
-import { materialColors } from '../theme';
+import { Box, Typography, Paper, Chip } from '@mui/material';
+import { Grid } from '@mui/material';
+import { lightColors, darkColors } from '../theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ColorCardProps {
   name: string;
@@ -42,8 +43,8 @@ const ColorCard: React.FC<ColorCardProps> = ({ name, color, textColor = '#000' }
 };
 
 const ColorsPage: React.FC = () => {
-  const [isDark, setIsDark] = useState(false);
-  const currentColors = isDark ? materialColors.dark : materialColors.light;
+  const { mode } = useTheme();
+  const currentColors = mode === 'dark' ? darkColors : lightColors;
 
   const colorGroups = [
     {
@@ -115,11 +116,11 @@ const ColorsPage: React.FC = () => {
   const getTextColor = (colorKey: string): string => {
     // "on" で始まるカラーは通常テキスト用なので、背景色に応じて調整
     if (colorKey.startsWith('on')) {
-      return isDark ? '#000' : '#fff';
+      return mode === 'dark' ? '#000' : '#fff';
     }
     // その他のカラーは対応する "on" カラーを使用
     const onColorKey = `on${colorKey.charAt(0).toUpperCase() + colorKey.slice(1)}` as keyof typeof currentColors;
-    return currentColors[onColorKey] || (isDark ? '#fff' : '#000');
+    return currentColors[onColorKey] || (mode === 'dark' ? '#fff' : '#000');
   };
 
   return (
@@ -128,21 +129,27 @@ const ColorsPage: React.FC = () => {
         <Typography variant="h3" gutterBottom>
           🎨 Material Design 3 カラーパレット
         </Typography>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={isDark}
-              onChange={(e) => setIsDark(e.target.checked)}
-            />
-          }
-          label={isDark ? 'ダークテーマ' : 'ライトテーマ'}
-        />
+        <Typography variant="body2" color="text.secondary">
+          現在のテーマ: {mode === 'dark' ? 'ダーク' : 'ライト'}モード
+        </Typography>
       </Box>
 
       <Typography variant="body1" paragraph>
-        Material Design 3の完全なカラーシステムです。各カラートークンは、
-        アクセシビリティとユーザビリティを考慮して設計されています。
+        Material Color Utilitiesを使用して、プライマリカラー（#65558F）から自動生成された
+        完全なカラーシステムです。各カラートークンは、アクセシビリティとユーザビリティを
+        考慮して設計されています。
       </Typography>
+
+      <Paper elevation={1} sx={{ p: 3, mb: 4, backgroundColor: 'primary.main', color: 'primary.contrastText' }}>
+        <Typography variant="h6" gutterBottom>
+          🎯 動的カラー生成
+        </Typography>
+        <Typography variant="body2">
+          このカラーパレットは、Material Color Utilitiesライブラリを使用して、
+          単一のプライマリカラーから自動的に生成されています。
+          ライトモードとダークモードの両方で最適なコントラストと調和を保ちます。
+        </Typography>
+      </Paper>
 
       {colorGroups.map((group) => (
         <Box key={group.title} sx={{ mb: 6 }}>
