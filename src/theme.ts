@@ -214,21 +214,16 @@ const generateColorsWithOriginalPrimary = (primaryColor: string) => {
 
 // プライマリカラーからカラーパレットを生成する関数
 export const generateColorsFromPrimary = (primaryColor: string, useOriginalColor: boolean = false) => {
-    console.log('Generating colors from primary:', primaryColor, 'useOriginalColor:', useOriginalColor) // デバッグ用
-    
     // グレースケール色の場合は特別な処理
     if (isGrayscale(primaryColor)) {
-        console.log('Detected grayscale color, using special handling') // デバッグ用
         return generateGrayscaleColors(primaryColor);
     }
     
     // オリジナル色を保持する場合の処理
     if (useOriginalColor) {
-        console.log('Using original color preservation') // デバッグ用
         return generateColorsWithOriginalPrimary(primaryColor);
     }
     
-    console.log('Using standard Material Color Utilities generation') // デバッグ用
     const materialTheme: MaterialTheme = themeFromSourceColor(
         argbFromHex(primaryColor)
     )

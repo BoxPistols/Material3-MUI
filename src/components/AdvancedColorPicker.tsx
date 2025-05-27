@@ -134,7 +134,6 @@ const AdvancedColorPicker: React.FC<AdvancedColorPickerProps> = ({
             setHexInput(newHex)
 
             if (/^#[0-9A-Fa-f]{6}$/.test(newHex)) {
-                console.log('Setting color:', newHex) // デバッグ用
                 const newOklch = hexToOklch(newHex)
                 const newRgb = hexToRgb(newHex)
 
@@ -379,8 +378,39 @@ const AdvancedColorPicker: React.FC<AdvancedColorPickerProps> = ({
                     />
                 }
                 label='オリジナル色を保持（Material Design 3の自動調整を無効化）'
-                sx={{ mb: 3 }}
+                sx={{ mb: 2 }}
             />
+            
+            {/* 濃い色使用時の注意事項 */}
+            {(() => {
+                const r = parseInt(hexInput.slice(1, 3), 16) || 0;
+                const g = parseInt(hexInput.slice(3, 5), 16) || 0;
+                const b = parseInt(hexInput.slice(5, 7), 16) || 0;
+                const brightness = (r + g + b) / 3;
+                
+                if (brightness < 50 && !useOriginalColor) {
+                    return (
+                        <Box sx={{ 
+                            p: 2, 
+                            mb: 2, 
+                            backgroundColor: 'warning.light', 
+                            color: 'warning.contrastText',
+                            borderRadius: 1,
+                            border: '1px solid',
+                            borderColor: 'warning.main'
+                        }}>
+                            <Typography variant='body2' sx={{ fontWeight: 'bold', mb: 1 }}>
+                                ⚠️ 濃い色が検出されました
+                            </Typography>
+                            <Typography variant='body2'>
+                                #{hexInput.slice(1)} のような濃い色は、Material Color Utilitiesによって自動調整される可能性があります。
+                                元の色をそのまま使用したい場合は、上記の「オリジナル色を保持」を有効にしてください。
+                            </Typography>
+                        </Box>
+                    );
+                }
+                return null;
+            })()}
 
             <Divider sx={{ mb: 3 }} />
 
@@ -390,9 +420,9 @@ const AdvancedColorPicker: React.FC<AdvancedColorPickerProps> = ({
                 gutterBottom
                 sx={{ fontWeight: 'bold' }}
             >
-                濃紺テスト
+                濃紺・ダークカラーテスト
             </Typography>
-            <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
+            <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
                 {['#003366', '#001f3f', '#0d47a1', '#1565c0', '#0277bd', '#01579b'].map((navyColor) => (
                     <Box
                         key={navyColor}
@@ -421,6 +451,47 @@ const AdvancedColorPicker: React.FC<AdvancedColorPickerProps> = ({
                         }}
                     >
                         {navyColor.slice(1, 4)}
+                    </Box>
+                ))}
+            </Box>
+            
+            {/* 極濃色テスト */}
+            <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
+                極濃色（オリジナル色保持推奨）:
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
+                {['#000033', '#001122', '#000066', '#001a33', '#000d1a', '#000f1f'].map((darkColor) => (
+                    <Box
+                        key={darkColor}
+                        onClick={() => {
+                            console.log('Testing dark color:', darkColor)
+                            // オリジナル色保持を自動的に有効にする
+                            if (!useOriginalColor) {
+                                setUseOriginalColor(true)
+                            }
+                            onChange(darkColor)
+                        }}
+                        sx={{
+                            width: 40,
+                            height: 40,
+                            backgroundColor: darkColor,
+                            borderRadius: 1,
+                            cursor: 'pointer',
+                            border: '2px solid',
+                            borderColor: currentColor.toLowerCase() === darkColor.toLowerCase() ? 'primary.main' : 'rgba(255,255,255,0.5)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontSize: '0.6rem',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                transform: 'scale(1.1)',
+                                transition: 'transform 0.2s',
+                            },
+                        }}
+                    >
+                        {darkColor.slice(1, 4)}
                     </Box>
                 ))}
             </Box>
