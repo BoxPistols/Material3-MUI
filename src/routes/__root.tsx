@@ -5,10 +5,11 @@ import { CssBaseline, Box } from "@mui/material"
 import { createMaterialTheme } from "../theme"
 import { ThemeProvider, useTheme } from "../contexts/ThemeContext"
 import AppNavigation from "../components/AppNavigation"
+import { useMemo } from 'react'
 
 const AppContent: React.FC = () => {
   const { mode, primaryColor } = useTheme();
-  const theme = createMaterialTheme(mode, primaryColor);
+  const theme = useMemo(() => createMaterialTheme(mode, primaryColor), [mode, primaryColor]);
 
   return (
     <MuiThemeProvider theme={theme}>

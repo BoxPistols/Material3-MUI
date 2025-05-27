@@ -21,6 +21,7 @@ import {
   CircularProgress,
   Divider,
 } from '@mui/material';
+import { Widgets, Home, Star, Add, Email } from '@mui/icons-material';
 import { useState } from 'react';
 
 const ComponentsPage: React.FC = () => {
@@ -32,8 +33,8 @@ const ComponentsPage: React.FC = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h3" gutterBottom>
-        🧩 MUI コンポーネント + Material Design 3
+      <Typography variant="h3" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Widgets /> MUI コンポーネント + Material Design 3
       </Typography>
       
       <Typography variant="body1" paragraph>
@@ -154,16 +155,16 @@ const ComponentsPage: React.FC = () => {
             <Typography variant="h6" gutterBottom>ボタン類</Typography>
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
               <IconButton color="primary">
-                <span>🏠</span>
+                <Home />
               </IconButton>
               <IconButton color="secondary">
-                <span>⭐</span>
+                <Star />
               </IconButton>
               <Fab color="primary" size="small">
-                <span>+</span>
+                <Add />
               </Fab>
               <Fab color="secondary">
-                <span>✉️</span>
+                <Email />
               </Fab>
             </Box>
           </Box>

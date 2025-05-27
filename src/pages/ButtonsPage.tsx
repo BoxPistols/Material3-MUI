@@ -1,4 +1,5 @@
 import { Box, Typography, Button, Paper, Divider } from '@mui/material';
+import { SmartButton, Rocket, AutoAwesome } from '@mui/icons-material';
 
 const ButtonsPage: React.FC = () => {
   const buttonVariants = [
@@ -42,8 +43,8 @@ const ButtonsPage: React.FC = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h3" gutterBottom>
-        🔘 Material Design 3 ボタンバリアント
+      <Typography variant="h3" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <SmartButton /> Material Design 3 ボタンバリアント
       </Typography>
       
       <Typography variant="body1" paragraph>
@@ -105,13 +106,13 @@ const ButtonsPage: React.FC = () => {
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <Button
                 variant={buttonInfo.variant}
-                startIcon={<span>🚀</span>}
+                startIcon={<Rocket />}
               >
                 Start Icon
               </Button>
               <Button
                 variant={buttonInfo.variant}
-                endIcon={<span>✨</span>}
+                endIcon={<AutoAwesome />}
               >
                 End Icon
               </Button>

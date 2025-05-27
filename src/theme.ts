@@ -12,8 +12,112 @@ const DEFAULT_PRIMARY_COLOR = '#65558F'
 // ARGBからHEXに変換するヘルパー関数
 const argbToHex = (argb: number): string => hexFromArgb(argb)
 
+// 彩度の低い色（グレースケール）かどうかを判定する関数
+const isGrayscale = (hex: string): boolean => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    
+    // RGB値の差が小さい場合はグレースケールと判定
+    const maxDiff = Math.max(Math.abs(r - g), Math.abs(g - b), Math.abs(r - b));
+    return maxDiff < 10;
+};
+
+// グレースケール色用の特別なカラーパレットを生成する関数
+const generateGrayscaleColors = (primaryColor: string) => {
+    const r = parseInt(primaryColor.slice(1, 3), 16);
+    const g = parseInt(primaryColor.slice(3, 5), 16);
+    const b = parseInt(primaryColor.slice(5, 7), 16);
+    const brightness = (r + g + b) / 3;
+    
+    // 明度に基づいてライト/ダークテーマの色を決定
+    const isDark = brightness < 128;
+    
+    return {
+        light: {
+            primary: primaryColor,
+            onPrimary: isDark ? '#FFFFFF' : '#000000',
+            primaryContainer: isDark ? '#E0E0E0' : '#F5F5F5',
+            onPrimaryContainer: isDark ? '#000000' : '#1C1B1F',
+            
+            secondary: '#625B71',
+            onSecondary: '#FFFFFF',
+            secondaryContainer: '#E8DEF8',
+            onSecondaryContainer: '#1D192B',
+            
+            tertiary: '#7D5260',
+            onTertiary: '#FFFFFF',
+            tertiaryContainer: '#FFD8E4',
+            onTertiaryContainer: '#31111D',
+            
+            error: '#BA1A1A',
+            onError: '#FFFFFF',
+            errorContainer: '#FFDAD6',
+            onErrorContainer: '#410002',
+            
+            background: '#FFFBFE',
+            onBackground: '#1C1B1F',
+            surface: '#FFFBFE',
+            onSurface: '#1C1B1F',
+            surfaceVariant: '#E7E0EC',
+            onSurfaceVariant: '#49454F',
+            
+            outline: '#79747E',
+            outlineVariant: '#CAC4D0',
+            shadow: '#000000',
+            scrim: '#000000',
+            
+            inverseSurface: '#313033',
+            inverseOnSurface: '#F4EFF4',
+            inversePrimary: isDark ? '#D0BCFF' : primaryColor,
+        },
+        dark: {
+            primary: isDark ? primaryColor : '#D0BCFF',
+            onPrimary: isDark ? '#FFFFFF' : '#371E73',
+            primaryContainer: isDark ? '#4F378B' : '#2C2C2C',
+            onPrimaryContainer: isDark ? '#EADDFF' : '#E0E0E0',
+            
+            secondary: '#CCC2DC',
+            onSecondary: '#332D41',
+            secondaryContainer: '#4A4458',
+            onSecondaryContainer: '#E8DEF8',
+            
+            tertiary: '#EFB8C8',
+            onTertiary: '#492532',
+            tertiaryContainer: '#633B48',
+            onTertiaryContainer: '#FFD8E4',
+            
+            error: '#FFB4AB',
+            onError: '#690005',
+            errorContainer: '#93000A',
+            onErrorContainer: '#FFDAD6',
+            
+            background: '#10131C',
+            onBackground: '#E6E1E5',
+            surface: '#10131C',
+            onSurface: '#E6E1E5',
+            surfaceVariant: '#49454F',
+            onSurfaceVariant: '#CAC4D0',
+            
+            outline: '#938F99',
+            outlineVariant: '#49454F',
+            shadow: '#000000',
+            scrim: '#000000',
+            
+            inverseSurface: '#E6E1E5',
+            inverseOnSurface: '#313033',
+            inversePrimary: '#6750A4',
+        },
+    };
+};
+
 // プライマリカラーからカラーパレットを生成する関数
 export const generateColorsFromPrimary = (primaryColor: string) => {
+    // グレースケール色の場合は特別な処理
+    if (isGrayscale(primaryColor)) {
+        return generateGrayscaleColors(primaryColor);
+    }
+    
     const materialTheme: MaterialTheme = themeFromSourceColor(
         argbFromHex(primaryColor)
     )
@@ -145,6 +249,48 @@ export const darkColors = defaultColors.dark
 export const materialColors = {
     light: lightColors,
     dark: darkColors,
+}
+
+// トーンパレットを生成してエクスポートする関数
+const generateTonalPalettesFromPrimary = (primaryColor: string) => {
+    const materialTheme: MaterialTheme = themeFromSourceColor(
+        argbFromHex(primaryColor)
+    )
+    // materialTheme.palettesはTonePaletteオブジェクトで、tone(toneNumber)で色を取得できる
+    // ここではtone(0)からtone(100)まで10刻みで色を取得してRecord<string, string>に変換する
+const convertPalette = (palette: { tone: (tone: number) => number }): Record<string, string> => {
+    const tones: Record<string, string> = {}
+    for (let tone = 0; tone <= 100; tone += 10) {
+        tones[tone.toString()] = argbToHex(palette.tone(tone))
+    }
+    return tones
+}
+
+    return {
+        light: {
+            primary: convertPalette(materialTheme.palettes.primary),
+            secondary: convertPalette(materialTheme.palettes.secondary),
+            tertiary: convertPalette(materialTheme.palettes.tertiary),
+            error: convertPalette(materialTheme.palettes.error),
+            neutral: convertPalette(materialTheme.palettes.neutral),
+            neutralVariant: convertPalette(materialTheme.palettes.neutralVariant),
+        },
+        dark: {
+            primary: convertPalette(materialTheme.palettes.primary),
+            secondary: convertPalette(materialTheme.palettes.secondary),
+            tertiary: convertPalette(materialTheme.palettes.tertiary),
+            error: convertPalette(materialTheme.palettes.error),
+            neutral: convertPalette(materialTheme.palettes.neutral),
+            neutralVariant: convertPalette(materialTheme.palettes.neutralVariant),
+        },
+    }
+}
+
+// デフォルトトーンパレット
+const defaultTonalPalettes = generateTonalPalettesFromPrimary(DEFAULT_PRIMARY_COLOR)
+export const tonalPalettes = {
+    light: defaultTonalPalettes.light,
+    dark: defaultTonalPalettes.dark,
 }
 
 // MUIテーマを作成する関数（MUI v7ベースコーディングとの親和性向上）
@@ -334,31 +480,47 @@ export const createMaterialTheme = (
                             position: 'static',
                             transform: 'none',
                             fontSize: '0.875rem',
+                            fontWeight: 500,
                             color: colors.onSurfaceVariant,
-                            marginBottom: '4px',
+                            marginBottom: '8px',
+                            display: 'block',
                             '&.Mui-focused': {
                                 transform: 'none',
                                 fontSize: '0.875rem',
+                                color: colors.primary,
                             },
                             '&.MuiInputLabel-shrink': {
                                 transform: 'none',
                                 fontSize: '0.875rem',
                             },
+                            '&.Mui-error': {
+                                color: colors.error,
+                            },
                         },
                         '& .MuiOutlinedInput-root': {
                             backgroundColor: colors.surface,
+                            borderRadius: '8px',
                             '& fieldset': {
                                 borderColor: colors.outline,
+                                borderWidth: '1px',
                             },
                             '&:hover fieldset': {
                                 borderColor: colors.onSurfaceVariant,
                             },
                             '&.Mui-focused fieldset': {
                                 borderColor: colors.primary,
+                                borderWidth: '2px',
+                            },
+                            '&.Mui-error fieldset': {
+                                borderColor: colors.error,
+                            },
+                            '& .MuiOutlinedInput-input': {
+                                padding: '12px 16px',
                             },
                         },
                         '& .MuiFilledInput-root': {
                             backgroundColor: colors.surfaceVariant,
+                            borderRadius: '8px 8px 0 0',
                             '&:before': {
                                 borderBottomColor: colors.outline,
                             },
@@ -367,6 +529,9 @@ export const createMaterialTheme = (
                             },
                             '&.Mui-focused:after': {
                                 borderBottomColor: colors.primary,
+                            },
+                            '&.Mui-error:after': {
+                                borderBottomColor: colors.error,
                             },
                         },
                         '& .MuiInput-root': {
@@ -379,12 +544,43 @@ export const createMaterialTheme = (
                             '&.Mui-focused:after': {
                                 borderBottomColor: colors.primary,
                             },
+                            '&.Mui-error:after': {
+                                borderBottomColor: colors.error,
+                            },
+                        },
+                        '& .MuiFormHelperText-root': {
+                            marginTop: '4px',
+                            marginLeft: 0,
+                            fontSize: '0.75rem',
+                            '&.Mui-error': {
+                                color: colors.error,
+                            },
                         },
                     },
                 },
                 defaultProps: {
                     InputLabelProps: {
                         shrink: true,
+                    },
+                },
+            },
+            MuiFormControl: {
+                styleOverrides: {
+                    root: {
+                        '& .MuiInputLabel-root': {
+                            position: 'static',
+                            transform: 'none',
+                            fontSize: '0.875rem',
+                            fontWeight: 500,
+                            color: colors.onSurfaceVariant,
+                            marginBottom: '8px',
+                            '&.Mui-focused': {
+                                color: colors.primary,
+                            },
+                            '&.Mui-error': {
+                                color: colors.error,
+                            },
+                        },
                     },
                 },
             },

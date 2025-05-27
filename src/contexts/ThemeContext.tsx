@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react'
 import type { ReactNode } from 'react'
 
 type ThemeMode = 'light' | 'dark'
@@ -36,19 +36,19 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         return savedColor || '#65558F' // デフォルトのMaterial Design 3 Purple
     })
 
-    const setMode = (newMode: ThemeMode) => {
+    const setMode = useCallback((newMode: ThemeMode) => {
         setModeState(newMode)
         localStorage.setItem('theme-mode', newMode)
-    }
+    }, [])
 
-    const setPrimaryColor = (newColor: string) => {
+    const setPrimaryColor = useCallback((newColor: string) => {
         setPrimaryColorState(newColor)
         localStorage.setItem('primary-color', newColor)
-    }
+    }, [])
 
-    const toggleMode = () => {
+    const toggleMode = useCallback(() => {
         setMode(mode === 'light' ? 'dark' : 'light')
-    }
+    }, [mode, setMode])
 
     // システム設定の変更を監視
     useEffect(() => {
@@ -64,10 +64,16 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         return () => mediaQuery.removeEventListener('change', handleChange)
     }, [])
 
+    const value = useMemo(() => ({
+        mode,
+        toggleMode,
+        setMode,
+        primaryColor,
+        setPrimaryColor
+    }), [mode, primaryColor, toggleMode, setMode, setPrimaryColor])
+
     return (
-        <ThemeContext.Provider
-            value={{ mode, toggleMode, setMode, primaryColor, setPrimaryColor }}
-        >
+        <ThemeContext.Provider value={value}>
             {children}
         </ThemeContext.Provider>
     )

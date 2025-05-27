@@ -1,4 +1,5 @@
 import { Box, Typography, Card, CardContent, Grid } from '@mui/material'
+import { Dashboard, ColorLens, SmartButton, Widgets, TextFields } from '@mui/icons-material'
 import { Link } from '@tanstack/react-router'
 
 const HomePage: React.FC = () => {
@@ -20,26 +21,8 @@ const HomePage: React.FC = () => {
                         sx={{ textDecoration: 'none', height: '100%' }}
                     >
                         <CardContent>
-                            <Typography variant='h5' gutterBottom>
-                                📊 SaaS Dashboard
-                            </Typography>
-                            <Typography variant='body2'>
-                                モックのAdmin画面とダッシュボードです。
-                                統計カード、データテーブル、チャートエリアなど、
-                                実際のSaaSアプリケーションで使用される要素を含んでいます。
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                    <Card
-                        component={Link}
-                        to='/dashboard'
-                        sx={{ textDecoration: 'none', height: '100%' }}
-                    >
-                        <CardContent>
-                            <Typography variant='h5' gutterBottom>
-                                📊 SaaS Dashboard
+                            <Typography variant='h5' gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Dashboard /> SaaS Dashboard
                             </Typography>
                             <Typography variant='body2'>
                                 モックのAdmin画面とダッシュボードです。
@@ -57,8 +40,8 @@ const HomePage: React.FC = () => {
                         sx={{ textDecoration: 'none', height: '100%' }}
                     >
                         <CardContent>
-                            <Typography variant='h5' gutterBottom>
-                                🎨 カラーパレット
+                            <Typography variant='h5' gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <ColorLens /> カラーパレット
                             </Typography>
                             <Typography variant='body2'>
                                 Material Design
@@ -76,8 +59,8 @@ const HomePage: React.FC = () => {
                         sx={{ textDecoration: 'none', height: '100%' }}
                     >
                         <CardContent>
-                            <Typography variant='h5' gutterBottom>
-                                🔘 ボタンバリアント
+                            <Typography variant='h5' gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <SmartButton /> ボタンバリアント
                             </Typography>
                             <Typography variant='body2'>
                                 Material Design
@@ -95,8 +78,8 @@ const HomePage: React.FC = () => {
                         sx={{ textDecoration: 'none', height: '100%' }}
                     >
                         <CardContent>
-                            <Typography variant='h5' gutterBottom>
-                                🧩 コンポーネント
+                            <Typography variant='h5' gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Widgets /> コンポーネント
                             </Typography>
                             <Typography variant='body2'>
                                 MUIの各コンポーネントがMaterial Design
@@ -113,8 +96,8 @@ const HomePage: React.FC = () => {
                         sx={{ textDecoration: 'none', height: '100%' }}
                     >
                         <CardContent>
-                            <Typography variant='h5' gutterBottom>
-                                📝 タイポグラフィ
+                            <Typography variant='h5' gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <TextFields /> タイポグラフィ
                             </Typography>
                             <Typography variant='body2'>
                                 Material Design 3のタイポグラフィスケールと

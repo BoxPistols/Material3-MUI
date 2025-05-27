@@ -34,6 +34,7 @@ import {
   Search,
   FilterList,
   Download,
+  Dashboard,
 } from '@mui/icons-material';
 
 // モックデータ
@@ -146,8 +147,8 @@ const DashboardPage: React.FC = () => {
     <Box sx={{ p: 4 }}>
       {/* ヘッダー */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h3" gutterBottom>
-          📊 SaaS Dashboard
+        <Typography variant="h3" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Dashboard /> SaaS Dashboard
         </Typography>
         <Typography variant="body1" color="text.secondary">
           管理画面のサンプルです。Material Design 3のコンポーネントを使用しています。

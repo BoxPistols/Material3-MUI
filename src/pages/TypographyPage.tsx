@@ -1,4 +1,5 @@
 import { Box, Typography, Paper, Divider } from '@mui/material';
+import { TextFields } from '@mui/icons-material';
 
 const TypographyPage: React.FC = () => {
   const typographyVariants = [
@@ -92,8 +93,8 @@ const TypographyPage: React.FC = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h3" gutterBottom>
-        📝 Material Design 3 タイポグラフィ
+      <Typography variant="h3" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <TextFields /> Material Design 3 タイポグラフィ
       </Typography>
       
       <Typography variant="body1" paragraph>

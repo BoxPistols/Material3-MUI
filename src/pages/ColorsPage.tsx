@@ -1,7 +1,9 @@
 import { Box, Typography, Paper, Chip } from '@mui/material'
 import { Grid } from '@mui/material'
+import { ColorLens, GpsFixed } from '@mui/icons-material'
 import { generateColorsFromPrimary } from '../theme'
 import { useTheme } from '../contexts/ThemeContext'
+import { useMemo } from 'react'
 
 interface ColorCardProps {
     name: string
@@ -48,7 +50,7 @@ const ColorCard: React.FC<ColorCardProps> = ({
 
 const ColorsPage: React.FC = () => {
     const { mode, primaryColor } = useTheme()
-    const currentColors = generateColorsFromPrimary(primaryColor)[mode]
+    const currentColors = useMemo(() => generateColorsFromPrimary(primaryColor)[mode], [primaryColor, mode])
 
     const colorGroups = [
         {
@@ -138,8 +140,8 @@ const ColorsPage: React.FC = () => {
                     mb: 4,
                 }}
             >
-                <Typography variant='h3' gutterBottom>
-                    🎨 Material Design 3 カラーパレット
+                <Typography variant='h3' gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <ColorLens /> Material Design 3 カラーパレット
                 </Typography>
                 <Box sx={{ textAlign: 'right' }}>
                     <Typography variant='body2' color='text.secondary'>
@@ -168,8 +170,8 @@ const ColorsPage: React.FC = () => {
                     color: 'primary.contrastText',
                 }}
             >
-                <Typography variant='h6' gutterBottom>
-                    🎯 動的カラー生成
+                <Typography variant='h6' gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <GpsFixed /> 動的カラー生成
                 </Typography>
                 <Typography variant='body2'>
                     このカラーパレットは、Material Color

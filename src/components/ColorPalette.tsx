@@ -1,6 +1,6 @@
 import React from "react";
 import {Box, Typography, Grid, Paper} from "@mui/material";
-import {materialColors} from "../theme";
+import {materialColors, tonalPalettes} from "../theme";
 
 interface ColorSwatchProps {
   color: string;
@@ -121,7 +121,7 @@ export const ColorPalette: React.FC = () => {
         <Typography variant="h3" gutterBottom>
           トーンパレット
         </Typography>
-        {Object.entries(materialColors.palettes).map(([name, palette]) => (
+        {Object.entries(tonalPalettes.light).map(([name, palette]) => (
           <TonalPaletteDisplay key={name} title={name} palette={palette} />
         ))}
       </Box>
