@@ -6,8 +6,8 @@ import {
     type Theme as MaterialTheme,
 } from '@material/material-color-utilities'
 
-// デフォルトプライマリカラー（Material Design 3のPurple）
-const DEFAULT_PRIMARY_COLOR = '#65558F'
+// デフォルトプライマリカラー（濃紺でテスト）
+const DEFAULT_PRIMARY_COLOR = '#003366'
 
 // ARGBからHEXに変換するヘルパー関数
 const argbToHex = (argb: number): string => hexFromArgb(argb)
@@ -118,12 +118,21 @@ const generateColorsWithOriginalPrimary = (primaryColor: string) => {
         argbFromHex(primaryColor)
     );
     
-    // 明度を計算してコントラストテキストを決定
+    // より正確な明度計算（WCAG基準）
     const r = parseInt(primaryColor.slice(1, 3), 16);
     const g = parseInt(primaryColor.slice(3, 5), 16);
     const b = parseInt(primaryColor.slice(5, 7), 16);
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    const contrastText = brightness > 128 ? '#000000' : '#FFFFFF';
+    
+    // WCAG相対輝度計算
+    const toLinear = (c: number) => {
+        c = c / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    };
+    
+    const luminance = 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+    const contrastText = luminance > 0.179 ? '#000000' : '#FFFFFF'; // より厳密な閾値
+    
+    console.log(`Color: ${primaryColor}, Luminance: ${luminance.toFixed(3)}, Contrast: ${contrastText}`); // デバッグ用
     
     return {
         light: {
@@ -205,16 +214,21 @@ const generateColorsWithOriginalPrimary = (primaryColor: string) => {
 
 // プライマリカラーからカラーパレットを生成する関数
 export const generateColorsFromPrimary = (primaryColor: string, useOriginalColor: boolean = false) => {
+    console.log('Generating colors from primary:', primaryColor, 'useOriginalColor:', useOriginalColor) // デバッグ用
+    
     // グレースケール色の場合は特別な処理
     if (isGrayscale(primaryColor)) {
+        console.log('Detected grayscale color, using special handling') // デバッグ用
         return generateGrayscaleColors(primaryColor);
     }
     
     // オリジナル色を保持する場合の処理
     if (useOriginalColor) {
+        console.log('Using original color preservation') // デバッグ用
         return generateColorsWithOriginalPrimary(primaryColor);
     }
     
+    console.log('Using standard Material Color Utilities generation') // デバッグ用
     const materialTheme: MaterialTheme = themeFromSourceColor(
         argbFromHex(primaryColor)
     )

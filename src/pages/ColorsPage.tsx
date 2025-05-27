@@ -180,6 +180,24 @@ const ColorsPage: React.FC = () => {
                     ナビゲーションバーのパレットアイコンから、リアルタイムでカラーを変更できます。
                     ライトモードとダークモードの両方で最適なコントラストと調和を保ちます。
                 </Typography>
+                
+                {/* プライマリカラー詳細情報 */}
+                <Box sx={{ mt: 2, p: 2, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 1 }}>
+                    <Typography variant='subtitle2' gutterBottom>
+                        現在のプライマリカラー詳細:
+                    </Typography>
+                    <Typography variant='body2' component='div'>
+                        • HEX: {primaryColor}<br/>
+                        • RGB: {(() => {
+                            const r = parseInt(primaryColor.slice(1, 3), 16);
+                            const g = parseInt(primaryColor.slice(3, 5), 16);
+                            const b = parseInt(primaryColor.slice(5, 7), 16);
+                            return `rgb(${r}, ${g}, ${b})`;
+                        })()}<br/>
+                        • オリジナル色保持: {useOriginalColor ? 'ON' : 'OFF'}<br/>
+                        • 生成されたプライマリ: {currentColors.primary}
+                    </Typography>
+                </Box>
             </Paper>
 
             {colorGroups.map((group) => (

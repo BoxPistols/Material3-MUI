@@ -35,13 +35,13 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const [primaryColor, setPrimaryColorState] = useState<string>(() => {
         // ローカルストレージからプライマリカラーを取得
         const savedColor = localStorage.getItem('primary-color')
-        return savedColor || '#65558F' // デフォルトのMaterial Design 3 Purple
+        return savedColor || '#003366' // 濃紺をデフォルトに設定（テスト用）
     })
 
     const [useOriginalColor, setUseOriginalColorState] = useState<boolean>(() => {
         // ローカルストレージからオリジナル色使用設定を取得
         const savedSetting = localStorage.getItem('use-original-color')
-        return savedSetting === 'true'
+        return savedSetting === 'true' || savedSetting === null // デフォルトでtrueに設定
     })
 
     const setMode = useCallback((newMode: ThemeMode) => {

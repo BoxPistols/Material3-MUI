@@ -134,6 +134,7 @@ const AdvancedColorPicker: React.FC<AdvancedColorPickerProps> = ({
             setHexInput(newHex)
 
             if (/^#[0-9A-Fa-f]{6}$/.test(newHex)) {
+                console.log('Setting color:', newHex) // デバッグ用
                 const newOklch = hexToOklch(newHex)
                 const newRgb = hexToRgb(newHex)
 
@@ -149,6 +150,10 @@ const AdvancedColorPicker: React.FC<AdvancedColorPickerProps> = ({
     const presetColors = [
         '#65558F', // Material Purple
         '#1976D2', // Blue
+        '#003366', // 濃紺 (Navy Blue)
+        '#001f3f', // ダークネイビー
+        '#0d47a1', // ディープブルー
+        '#1565c0', // ブルー
         '#388E3C', // Green
         '#F57C00', // Orange
         '#D32F2F', // Red
@@ -159,6 +164,10 @@ const AdvancedColorPicker: React.FC<AdvancedColorPickerProps> = ({
         '#FFFFFF', // White
         '#FF5722', // Deep Orange
         '#9C27B0', // Purple
+        '#2e7d32', // Dark Green
+        '#e65100', // Dark Orange
+        '#bf360c', // Deep Red
+        '#4a148c', // Deep Purple
     ]
 
     const currentColor = oklchToHex(oklchValues.l, oklchValues.c, oklchValues.h)
@@ -206,6 +215,8 @@ const AdvancedColorPicker: React.FC<AdvancedColorPickerProps> = ({
                 fullWidth
                 size='small'
                 sx={{ mb: 3 }}
+                placeholder='003366'
+                helperText='濃紺の例: #003366, #001f3f, #0d47a1'
                 InputProps={{
                     startAdornment: (
                         <InputAdornment position='start'>#</InputAdornment>
@@ -370,6 +381,49 @@ const AdvancedColorPicker: React.FC<AdvancedColorPickerProps> = ({
                 label='オリジナル色を保持（Material Design 3の自動調整を無効化）'
                 sx={{ mb: 3 }}
             />
+
+            <Divider sx={{ mb: 3 }} />
+
+            {/* 濃紺テスト用ボタン */}
+            <Typography
+                variant='subtitle1'
+                gutterBottom
+                sx={{ fontWeight: 'bold' }}
+            >
+                濃紺テスト
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
+                {['#003366', '#001f3f', '#0d47a1', '#1565c0', '#0277bd', '#01579b'].map((navyColor) => (
+                    <Box
+                        key={navyColor}
+                        onClick={() => {
+                            console.log('Testing navy color:', navyColor)
+                            onChange(navyColor)
+                        }}
+                        sx={{
+                            width: 40,
+                            height: 40,
+                            backgroundColor: navyColor,
+                            borderRadius: 1,
+                            cursor: 'pointer',
+                            border: '2px solid',
+                            borderColor: currentColor.toLowerCase() === navyColor.toLowerCase() ? 'primary.main' : 'rgba(255,255,255,0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontSize: '0.7rem',
+                            fontWeight: 'bold',
+                            '&:hover': {
+                                transform: 'scale(1.1)',
+                                transition: 'transform 0.2s',
+                            },
+                        }}
+                    >
+                        {navyColor.slice(1, 4)}
+                    </Box>
+                ))}
+            </Box>
 
             <Divider sx={{ mb: 3 }} />
 
