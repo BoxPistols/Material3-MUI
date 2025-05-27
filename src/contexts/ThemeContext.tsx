@@ -7,6 +7,8 @@ interface ThemeContextType {
     mode: ThemeMode
     toggleMode: () => void
     setMode: (mode: ThemeMode) => void
+    primaryColor: string
+    setPrimaryColor: (color: string) => void
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -28,9 +30,20 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
             : 'light'
     })
 
+    const [primaryColor, setPrimaryColorState] = useState<string>(() => {
+        // ローカルストレージからプライマリカラーを取得
+        const savedColor = localStorage.getItem('primary-color')
+        return savedColor || '#65558F' // デフォルトのMaterial Design 3 Purple
+    })
+
     const setMode = (newMode: ThemeMode) => {
         setModeState(newMode)
         localStorage.setItem('theme-mode', newMode)
+    }
+
+    const setPrimaryColor = (newColor: string) => {
+        setPrimaryColorState(newColor)
+        localStorage.setItem('primary-color', newColor)
     }
 
     const toggleMode = () => {
@@ -52,12 +65,15 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }, [])
 
     return (
-        <ThemeContext.Provider value={{ mode, toggleMode, setMode }}>
+        <ThemeContext.Provider
+            value={{ mode, toggleMode, setMode, primaryColor, setPrimaryColor }}
+        >
             {children}
         </ThemeContext.Provider>
     )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = (): ThemeContextType => {
     const context = useContext(ThemeContext)
     if (context === undefined) {

@@ -8,13 +8,25 @@ Material Design 3は、Googleが2021年に発表した最新のデザインシ�
 
 ## ✨ 主な特徴
 
-### 1. 動的カラー生成システム
+### 1. インタラクティブ動的カラー生成システム
+- **リアルタイムカラーピッカー**: ナビゲーションバーからワンクリックでプライマリカラーを変更
 - **Material Color Utilities**: Googleの公式ライブラリを使用した動的カラー生成
-- **単一カラーから完全パレット**: プライマリカラー1色から全カラートークンを自動生成
-- **ライト/ダークテーマ対応**: 自動的なテーマ切り替えとローカルストレージ永続化
-- **アクセシビリティ**: WCAG準拠のコントラスト比を自動計算
+- **単一カラーから完全パレット**: 選択したプライマリカラーから全カラートークンを自動生成
+- **即座の反映**: カラー変更が全コンポーネントに瞬時に適用
+- **永続化**: 選択したカラーをローカルストレージに自動保存
 
-### 2. カスタムButtonバリアント
+### 2. 改善されたナビゲーション
+- **Sticky Header**: スクロール時も常に表示されるナビゲーション
+- **Material Icons**: 絵文字ではなく公式Material Iconsを使用
+- **レスポンシブデザイン**: デスクトップではテキスト付き、モバイルではアイコンのみ
+- **視覚的フィードバック**: 現在のページを明確に表示
+
+### 3. MUI v7ベースコーディング親和性
+- **標準カラーバリエーション**: `light`、`dark`、`main`の完全サポート
+- **グレースケール統合**: Material Design 3カラーとMUIのgreyパレットの統合
+- **コンポーネント互換性**: 既存のMUIコンポーネントとの完全な互換性
+
+### 4. カスタムButtonバリアント
 MUI v7の標準Buttonコンポーネントを拡張し、Material Design 3の新しいバリアントを追加：
 
 - **`filled`**: プライマリアクション用の塗りつぶしボタン
@@ -23,20 +35,21 @@ MUI v7の標準Buttonコンポーネントを拡張し、Material Design 3の新
 - **`outlined`**: アウトライン付きボタン（Material Design 3スタイル）
 - **`text`**: テキストのみのボタン
 
-### 3. TypeScript型安全性
+### 5. TypeScript型安全性
 - カスタムバリアントの完全な型サポート
 - MUIコンポーネントの型拡張
 - 厳格な型チェック（`any`型の使用を最小限に抑制）
 
-### 4. テーマ永続化
-- **ローカルストレージ**: ユーザーのテーマ設定を自動保存
+### 6. テーマ永続化
+- **ローカルストレージ**: ユーザーのテーマ設定とカラー選択を自動保存
 - **システム設定連動**: OSのダークモード設定に自動対応
 - **グローバルナビゲーション**: ワンクリックでのテーマ切り替え
 
-## 🛠️ 技術スタック
+## ��️ 技術スタック
 
 - **React 19.1.0**: 最新のReactフレームワーク
 - **MUI v7.1.0**: Material-UIの最新バージョン
+- **Material Icons**: 公式Material Iconsライブラリ
 - **Material Color Utilities**: Googleの公式カラー生成ライブラリ
 - **TanStack Router**: 型安全なルーティングライブラリ
 - **TypeScript 5.8.3**: 型安全な開発
@@ -61,9 +74,9 @@ npm run build
 ```
 src/
 ├── components/          # Reactコンポーネント
-│   └── AppNavigation.tsx
+│   └── AppNavigation.tsx # ナビゲーション（カラーピッカー付き）
 ├── contexts/           # Reactコンテキスト
-│   └── ThemeContext.tsx # テーマ管理コンテキスト
+│   └── ThemeContext.tsx # テーマ・カラー管理コンテキスト
 ├── pages/              # ページコンポーネント
 │   ├── HomePage.tsx
 │   ├── ColorsPage.tsx
@@ -87,80 +100,106 @@ src/
 
 ## 🎯 実装の詳細
 
-### 動的カラー生成
+### インタラクティブカラーピッカー
 
-Material Color Utilitiesを使用して、単一のプライマリカラーから完全なカラーパレットを生成：
+ナビゲーションバーのパレットアイコンから、リアルタイムでプライマリカラーを変更：
 
 ```typescript
-import { themeFromSourceColor, argbFromHex, hexFromArgb } from '@material/material-color-utilities';
+// カラーピッカーの実装
+const { primaryColor, setPrimaryColor } = useTheme();
 
-const PRIMARY_COLOR = '#65558F';
-const materialTheme = themeFromSourceColor(argbFromHex(PRIMARY_COLOR));
+// 動的テーマ生成
+const theme = createMaterialTheme(mode, primaryColor);
 
-// ライトテーマのカラー生成例
-export const lightColors = {
-  primary: argbToHex(materialTheme.palettes.primary.tone(40)),
-  onPrimary: argbToHex(materialTheme.palettes.primary.tone(100)),
-  primaryContainer: argbToHex(materialTheme.palettes.primary.tone(90)),
-  // ... 他のカラートークン
+// カラー変更時の処理
+const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  setPrimaryColor(event.target.value);
 };
 ```
 
-### テーマコンテキスト
+### 動的カラー生成
 
-React Contextを使用したグローバルテーマ管理：
+Material Color Utilitiesを使用して、選択したプライマリカラーから完全なカラーパレットを生成：
 
 ```typescript
-const { mode, toggleMode } = useTheme();
-const theme = createMaterialTheme(mode);
+export const generateColorsFromPrimary = (primaryColor: string) => {
+  const materialTheme = themeFromSourceColor(argbFromHex(primaryColor));
+  
+  return {
+    light: {
+      primary: argbToHex(materialTheme.palettes.primary.tone(40)),
+      onPrimary: argbToHex(materialTheme.palettes.primary.tone(100)),
+      // ... 他のカラートークン
+    },
+    dark: {
+      primary: argbToHex(materialTheme.palettes.primary.tone(80)),
+      // ... ダークモード用カラー
+    }
+  };
+};
 ```
 
-### MUI v7の新しいGrid API
+### MUI v7親和性の向上
 
-MUI v7では、Gridコンポーネントの新しいAPIが導入されました：
+標準的なMUIカラーバリエーションとの互換性を確保：
 
 ```typescript
-// 新しいAPI（v7）
-<Grid container spacing={2}>
-  <Grid size={{ xs: 12, md: 6 }}>
-    <Card>コンテンツ</Card>
-  </Grid>
-</Grid>
+palette: {
+  primary: {
+    main: colors.primary,
+    light: colors.primaryContainer,
+    dark: mode === 'light' ? colors.primary : colors.primaryContainer,
+    contrastText: colors.onPrimary,
+  },
+  // MUI v7の標準greyパレットとの統合
+  grey: {
+    50: mode === 'light' ? colors.surface : colors.surfaceVariant,
+    // ... 完全なgreyスケール
+  },
+}
 ```
 
-### TanStack Routerの型安全ルーティング
+### Sticky Navigation
 
-ファイルベースルーティングと完全な型安全性を提供：
+スクロール時も常に表示されるナビゲーション：
 
 ```typescript
-// ルート定義
-export const Route = createFileRoute('/colors')({
-  component: ColorsPage,
-})
-
-// 型安全なナビゲーション
-<Link to="/colors">カラーページ</Link>
+MuiAppBar: {
+  styleOverrides: {
+    root: {
+      position: 'sticky',
+      top: 0,
+      zIndex: 1100,
+    },
+  },
+},
 ```
 
 ## 🎨 カラーシステムの特徴
 
+### インタラクティブカラー選択
+
+- **カラーピッカー**: HTML5カラーピッカーとHEX入力の両方をサポート
+- **プリセットカラー**: Material Design 3推奨カラーのクイック選択
+- **リアルタイム反映**: 選択と同時に全UIが更新
+- **永続化**: 選択したカラーを自動保存
+
 ### 動的生成プロセス
 
-1. **プライマリカラー設定**: `#65558F`（Material Design 3のPurple）
+1. **プライマリカラー選択**: ユーザーがカラーピッカーで選択
 2. **Material Color Utilities**: Googleのアルゴリズムでカラーパレット生成
 3. **トーン計算**: ライト/ダークモードに最適化されたトーン値
 4. **アクセシビリティ**: 自動的なコントラスト比計算
+5. **即座の適用**: 全コンポーネントに瞬時に反映
 
 ### カラートークン
 
-- **Primary**: メインブランドカラー
-- **Secondary**: セカンダリアクション用カラー
-- **Tertiary**: アクセントカラー
-- **Error**: エラー状態の表示
-- **Surface**: 背景とコンテナ
-- **Outline**: 境界線とディバイダー
-
-各カラーには対応する「on-color」（テキスト用）が自動生成され、適切なコントラスト比を保証しています。
+- **Primary**: メインブランドカラー（ユーザー選択）
+- **Secondary**: セカンダリアクション用カラー（自動生成）
+- **Tertiary**: アクセントカラー（自動生成）
+- **Error**: エラー状態の表示（自動生成）
+- **Surface**: 背景とコンテナ（自動生成）
+- **Outline**: 境界線とディバイダー（自動生成）
 
 ## 🌙 ダークモード機能
 
@@ -170,25 +209,28 @@ export const Route = createFileRoute('/colors')({
 - **永続化**: ローカルストレージでユーザー設定を保存
 - **即座の切り替え**: ナビゲーションバーのボタンでワンクリック切り替え
 - **完全対応**: 全コンポーネントがダークモードに対応
+- **Material Icons**: ライト/ダークモードに応じたアイコン表示
 
 ### 実装
 
 ```typescript
 // テーマコンテキストの使用
-const { mode, toggleMode } = useTheme();
+const { mode, toggleMode, primaryColor } = useTheme();
 
 // 動的テーマ生成
-const theme = createMaterialTheme(mode);
+const theme = createMaterialTheme(mode, primaryColor);
 ```
 
 ## 🔄 MUI v7からの主な変更点
 
-1. **動的カラー生成**: Material Color Utilitiesによる自動カラーパレット生成
-2. **新しいGrid API**: `size`プロパティを使用したレスポンシブレイアウト
-3. **新しいButtonバリアント**: Material Design 3準拠の4つの新バリアント
-4. **テーマ永続化**: ローカルストレージとシステム設定連動
-5. **タイポグラフィの調整**: `textTransform: 'none'`でMaterial Design 3スタイル
-6. **角丸の統一**: `borderRadius: 12px`でMaterial Design 3の丸みを実現
+1. **インタラクティブカラーピッカー**: リアルタイムでのプライマリカラー変更
+2. **Material Icons統合**: 絵文字からMaterial Iconsへの移行
+3. **Sticky Navigation**: 常に表示されるナビゲーションヘッダー
+4. **MUI v7親和性向上**: 標準カラーバリエーションとgreyパレットの統合
+5. **動的カラー生成**: Material Color Utilitiesによる自動カラーパレット生成
+6. **新しいGrid API**: `size`プロパティを使用したレスポンシブレイアウト
+7. **新しいButtonバリアント**: Material Design 3準拠の4つの新バリアント
+8. **テーマ永続化**: ローカルストレージとシステム設定連動
 
 ## 🚦 ルーティングシステム
 
@@ -201,24 +243,26 @@ TanStack Routerによる型安全なルーティング：
 
 ## 📱 レスポンシブ対応
 
-- モバイルファーストデザイン
-- タブレット・デスクトップ対応
-- MUI v7の新しいGrid APIによるフレキシブルレイアウト
-- ダークモード対応のレスポンシブUI
+- **モバイルファーストデザイン**: 小画面から大画面まで最適化
+- **アダプティブナビゲーション**: デスクトップではテキスト付き、モバイルではアイコンのみ
+- **MUI v7の新しいGrid API**: フレキシブルレイアウト
+- **ダークモード対応**: 全デバイスでダークモードサポート
 
 ## 🎯 Material Design 3の実装
 
 ### 動的カラー（Material You）
 
-- **単一ソースカラー**: プライマリカラー1色から全パレット生成
+- **ユーザー選択カラー**: 任意のプライマリカラーから全パレット生成
 - **調和のとれたカラー**: 科学的アルゴリズムによる色彩調和
 - **アクセシビリティ**: 自動的なコントラスト比最適化
+- **リアルタイム更新**: 選択と同時に全UIが更新
 
 ### 新しいコンポーネントスタイル
 
 - **丸みのあるデザイン**: 12px〜40pxの統一された角丸
 - **エレベーション**: 適切な影とレイヤリング
 - **タイポグラフィ**: Material Design 3のタイプスケール
+- **Material Icons**: 公式アイコンライブラリの使用
 
 ## 🤝 コントリビューション
 
@@ -230,4 +274,4 @@ MIT License
 
 ---
 
-**Material Design 3 + MUI 7** - 次世代のデザインシステムを今すぐ体験
+**Material Design 3 + MUI 7** - インタラクティブな次世代デザインシステムを今すぐ体験

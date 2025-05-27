@@ -1,6 +1,6 @@
 import { Box, Typography, Paper, Chip } from '@mui/material';
 import { Grid } from '@mui/material';
-import { lightColors, darkColors } from '../theme';
+import { generateColorsFromPrimary } from '../theme';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface ColorCardProps {
@@ -43,8 +43,8 @@ const ColorCard: React.FC<ColorCardProps> = ({ name, color, textColor = '#000' }
 };
 
 const ColorsPage: React.FC = () => {
-  const { mode } = useTheme();
-  const currentColors = mode === 'dark' ? darkColors : lightColors;
+  const { mode, primaryColor } = useTheme();
+  const currentColors = generateColorsFromPrimary(primaryColor)[mode];
 
   const colorGroups = [
     {
@@ -129,13 +129,18 @@ const ColorsPage: React.FC = () => {
         <Typography variant="h3" gutterBottom>
           🎨 Material Design 3 カラーパレット
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          現在のテーマ: {mode === 'dark' ? 'ダーク' : 'ライト'}モード
-        </Typography>
+        <Box sx={{ textAlign: 'right' }}>
+          <Typography variant="body2" color="text.secondary">
+            現在のテーマ: {mode === 'dark' ? 'ダーク' : 'ライト'}モード
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            プライマリカラー: {primaryColor}
+          </Typography>
+        </Box>
       </Box>
 
       <Typography variant="body1" paragraph>
-        Material Color Utilitiesを使用して、プライマリカラー（#65558F）から自動生成された
+        Material Color Utilitiesを使用して、プライマリカラー（{primaryColor}）から自動生成された
         完全なカラーシステムです。各カラートークンは、アクセシビリティとユーザビリティを
         考慮して設計されています。
       </Typography>
@@ -146,7 +151,8 @@ const ColorsPage: React.FC = () => {
         </Typography>
         <Typography variant="body2">
           このカラーパレットは、Material Color Utilitiesライブラリを使用して、
-          単一のプライマリカラーから自動的に生成されています。
+          選択されたプライマリカラーから自動的に生成されています。
+          ナビゲーションバーのパレットアイコンから、リアルタイムでカラーを変更できます。
           ライトモードとダークモードの両方で最適なコントラストと調和を保ちます。
         </Typography>
       </Paper>

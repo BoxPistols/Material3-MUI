@@ -7,8 +7,8 @@ import { ThemeProvider, useTheme } from "../contexts/ThemeContext"
 import AppNavigation from "../components/AppNavigation"
 
 const AppContent: React.FC = () => {
-  const { mode } = useTheme();
-  const theme = createMaterialTheme(mode);
+  const { mode, primaryColor } = useTheme();
+  const theme = createMaterialTheme(mode, primaryColor);
 
   return (
     <MuiThemeProvider theme={theme}>
