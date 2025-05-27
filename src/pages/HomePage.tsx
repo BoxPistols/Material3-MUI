@@ -16,6 +16,43 @@ const HomePage: React.FC = () => {
                 <Grid size={{ xs: 12, md: 6 }}>
                     <Card
                         component={Link}
+                        to='/dashboard'
+                        sx={{ textDecoration: 'none', height: '100%' }}
+                    >
+                        <CardContent>
+                            <Typography variant='h5' gutterBottom>
+                                📊 SaaS Dashboard
+                            </Typography>
+                            <Typography variant='body2'>
+                                モックのAdmin画面とダッシュボードです。
+                                統計カード、データテーブル、チャートエリアなど、
+                                実際のSaaSアプリケーションで使用される要素を含んでいます。
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                    <Card
+                        component={Link}
+                        to='/dashboard'
+                        sx={{ textDecoration: 'none', height: '100%' }}
+                    >
+                        <CardContent>
+                            <Typography variant='h5' gutterBottom>
+                                📊 SaaS Dashboard
+                            </Typography>
+                            <Typography variant='body2'>
+                                モックのAdmin画面とダッシュボードです。
+                                統計カード、データテーブル、チャートエリアなど、
+                                実際のSaaSアプリケーションで使用される要素を含んでいます。
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                    <Card
+                        component={Link}
                         to='/colors'
                         sx={{ textDecoration: 'none', height: '100%' }}
                     >

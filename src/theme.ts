@@ -241,6 +241,21 @@ export const createMaterialTheme = (
                             boxShadow: 'none',
                         },
                     },
+                    sizeSmall: {
+                        padding: '6px 16px',
+                        fontSize: '0.8125rem',
+                        minHeight: 32,
+                    },
+                    sizeMedium: {
+                        padding: '8px 20px',
+                        fontSize: '0.875rem',
+                        minHeight: 40,
+                    },
+                    sizeLarge: {
+                        padding: '12px 24px',
+                        fontSize: '0.9375rem',
+                        minHeight: 48,
+                    },
                 },
                 variants: [
                     {
@@ -309,6 +324,67 @@ export const createMaterialTheme = (
                         backgroundColor: colors.surface,
                         color: colors.onSurface,
                         borderRadius: 12,
+                    },
+                },
+            },
+            MuiTextField: {
+                styleOverrides: {
+                    root: {
+                        '& .MuiInputLabel-root': {
+                            position: 'static',
+                            transform: 'none',
+                            fontSize: '0.875rem',
+                            color: colors.onSurfaceVariant,
+                            marginBottom: '4px',
+                            '&.Mui-focused': {
+                                transform: 'none',
+                                fontSize: '0.875rem',
+                            },
+                            '&.MuiInputLabel-shrink': {
+                                transform: 'none',
+                                fontSize: '0.875rem',
+                            },
+                        },
+                        '& .MuiOutlinedInput-root': {
+                            backgroundColor: colors.surface,
+                            '& fieldset': {
+                                borderColor: colors.outline,
+                            },
+                            '&:hover fieldset': {
+                                borderColor: colors.onSurfaceVariant,
+                            },
+                            '&.Mui-focused fieldset': {
+                                borderColor: colors.primary,
+                            },
+                        },
+                        '& .MuiFilledInput-root': {
+                            backgroundColor: colors.surfaceVariant,
+                            '&:before': {
+                                borderBottomColor: colors.outline,
+                            },
+                            '&:hover:before': {
+                                borderBottomColor: colors.onSurfaceVariant,
+                            },
+                            '&.Mui-focused:after': {
+                                borderBottomColor: colors.primary,
+                            },
+                        },
+                        '& .MuiInput-root': {
+                            '&:before': {
+                                borderBottomColor: colors.outline,
+                            },
+                            '&:hover:before': {
+                                borderBottomColor: colors.onSurfaceVariant,
+                            },
+                            '&.Mui-focused:after': {
+                                borderBottomColor: colors.primary,
+                            },
+                        },
+                    },
+                },
+                defaultProps: {
+                    InputLabelProps: {
+                        shrink: true,
                     },
                 },
             },

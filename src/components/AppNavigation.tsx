@@ -18,7 +18,8 @@ import {
   ColorLens,
   SmartButton,
   Widgets,
-  TextFields
+  TextFields,
+  Dashboard
 } from '@mui/icons-material';
 import { Link, useLocation } from '@tanstack/react-router';
 import { useTheme } from '../contexts/ThemeContext';
@@ -31,6 +32,7 @@ const AppNavigation: React.FC = () => {
 
   const navItems = [
     { path: '/', label: 'ホーム', icon: Home },
+    { path: '/dashboard', label: 'ダッシュボード', icon: Dashboard },
     { path: '/colors', label: 'カラー', icon: ColorLens },
     { path: '/buttons', label: 'ボタン', icon: SmartButton },
     { path: '/components', label: 'コンポーネント', icon: Widgets },

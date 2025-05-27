@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TypographyImport } from './routes/typography'
+import { Route as DashboardImport } from './routes/dashboard'
 import { Route as ComponentsImport } from './routes/components'
 import { Route as ColorsImport } from './routes/colors'
 import { Route as ButtonsImport } from './routes/buttons'
@@ -22,6 +23,12 @@ import { Route as IndexImport } from './routes/index'
 const TypographyRoute = TypographyImport.update({
   id: '/typography',
   path: '/typography',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DashboardRoute = DashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,6 +88,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComponentsImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardImport
+      parentRoute: typeof rootRoute
+    }
     '/typography': {
       id: '/typography'
       path: '/typography'
@@ -98,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/buttons': typeof ButtonsRoute
   '/colors': typeof ColorsRoute
   '/components': typeof ComponentsRoute
+  '/dashboard': typeof DashboardRoute
   '/typography': typeof TypographyRoute
 }
 
@@ -106,6 +121,7 @@ export interface FileRoutesByTo {
   '/buttons': typeof ButtonsRoute
   '/colors': typeof ColorsRoute
   '/components': typeof ComponentsRoute
+  '/dashboard': typeof DashboardRoute
   '/typography': typeof TypographyRoute
 }
 
@@ -115,15 +131,35 @@ export interface FileRoutesById {
   '/buttons': typeof ButtonsRoute
   '/colors': typeof ColorsRoute
   '/components': typeof ComponentsRoute
+  '/dashboard': typeof DashboardRoute
   '/typography': typeof TypographyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/buttons' | '/colors' | '/components' | '/typography'
+  fullPaths:
+    | '/'
+    | '/buttons'
+    | '/colors'
+    | '/components'
+    | '/dashboard'
+    | '/typography'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/buttons' | '/colors' | '/components' | '/typography'
-  id: '__root__' | '/' | '/buttons' | '/colors' | '/components' | '/typography'
+  to:
+    | '/'
+    | '/buttons'
+    | '/colors'
+    | '/components'
+    | '/dashboard'
+    | '/typography'
+  id:
+    | '__root__'
+    | '/'
+    | '/buttons'
+    | '/colors'
+    | '/components'
+    | '/dashboard'
+    | '/typography'
   fileRoutesById: FileRoutesById
 }
 
@@ -132,6 +168,7 @@ export interface RootRouteChildren {
   ButtonsRoute: typeof ButtonsRoute
   ColorsRoute: typeof ColorsRoute
   ComponentsRoute: typeof ComponentsRoute
+  DashboardRoute: typeof DashboardRoute
   TypographyRoute: typeof TypographyRoute
 }
 
@@ -140,6 +177,7 @@ const rootRouteChildren: RootRouteChildren = {
   ButtonsRoute: ButtonsRoute,
   ColorsRoute: ColorsRoute,
   ComponentsRoute: ComponentsRoute,
+  DashboardRoute: DashboardRoute,
   TypographyRoute: TypographyRoute,
 }
 
@@ -157,6 +195,7 @@ export const routeTree = rootRoute
         "/buttons",
         "/colors",
         "/components",
+        "/dashboard",
         "/typography"
       ]
     },
@@ -171,6 +210,9 @@ export const routeTree = rootRoute
     },
     "/components": {
       "filePath": "components.tsx"
+    },
+    "/dashboard": {
+      "filePath": "dashboard.tsx"
     },
     "/typography": {
       "filePath": "typography.tsx"
