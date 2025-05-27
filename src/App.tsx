@@ -9,10 +9,10 @@ function App() {
                 display='flex'
                 flexDirection='column'
                 gap={4}
-                sx={{ p: 4, minHeight: '100vh' }}
+                sx={{ p: 16, minHeight: '100vh' }}
             >
                 <Box>
-                    <Typography variant='h1' gutterBottom>
+                    <Typography variant='h2' gutterBottom>
                         Material Design 3 + MUI
                     </Typography>
                     <Typography variant='body1' paragraph>
@@ -20,16 +20,20 @@ function App() {
                     </Typography>
                 </Box>
                 <Box display='flex' gap={2}>
-                    <Button variant='filled'>Filled Button</Button>
+                    <Typography variant='h4'>MUIの標準ボタン</Typography>
+                    {/* デフォルトボタン */}
+                    <Button variant='contained'>Contained Button</Button>
                     <Button variant='outlined'>Outlined Button</Button>
                     <Button variant='text'>Text Button</Button>
                 </Box>
                 <Box display='flex' gap={2}>
-                    <Button variant='elevated'>Elevated Button</Button>
+                    <Typography variant='h4'>
+                        Material Design 3のボタン
+                    </Typography>
+                    {/* これはMaterial Design 3のボタンとして拡張 */}
                     <Button variant='filled'>Filled Button</Button>
+                    <Button variant='elevated'>Elevated Button</Button>
                     <Button variant='tonal'>Tonal Button</Button>
-                    <Button variant='outlined'>Outlined Button</Button>
-                    <Button variant='text'>Text Button</Button>
                 </Box>
             </Box>
         </ThemeProvider>

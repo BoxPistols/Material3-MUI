@@ -5,6 +5,5 @@ declare module '@mui/material/Button' {
     elevated: true;
     filled: true;
     tonal: true;
-    contained: never;
   }
 }
