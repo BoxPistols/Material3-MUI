@@ -9,6 +9,8 @@ interface ThemeContextType {
     setMode: (mode: ThemeMode) => void
     primaryColor: string
     setPrimaryColor: (color: string) => void
+    useOriginalColor: boolean
+    setUseOriginalColor: (use: boolean) => void
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -36,6 +38,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         return savedColor || '#65558F' // デフォルトのMaterial Design 3 Purple
     })
 
+    const [useOriginalColor, setUseOriginalColorState] = useState<boolean>(() => {
+        // ローカルストレージからオリジナル色使用設定を取得
+        const savedSetting = localStorage.getItem('use-original-color')
+        return savedSetting === 'true'
+    })
+
     const setMode = useCallback((newMode: ThemeMode) => {
         setModeState(newMode)
         localStorage.setItem('theme-mode', newMode)
@@ -44,6 +52,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const setPrimaryColor = useCallback((newColor: string) => {
         setPrimaryColorState(newColor)
         localStorage.setItem('primary-color', newColor)
+    }, [])
+
+    const setUseOriginalColor = useCallback((use: boolean) => {
+        setUseOriginalColorState(use)
+        localStorage.setItem('use-original-color', use.toString())
     }, [])
 
     const toggleMode = useCallback(() => {
@@ -69,8 +82,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         toggleMode,
         setMode,
         primaryColor,
-        setPrimaryColor
-    }), [mode, primaryColor, toggleMode, setMode, setPrimaryColor])
+        setPrimaryColor,
+        useOriginalColor,
+        setUseOriginalColor
+    }), [mode, primaryColor, useOriginalColor, toggleMode, setMode, setPrimaryColor, setUseOriginalColor])
 
     return (
         <ThemeContext.Provider value={value}>

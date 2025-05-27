@@ -124,7 +124,7 @@ const AppNavigation: React.FC = () => {
           </Tooltip>
         </Box>
 
-        {/* カラーピッカーポップオーバー */}
+        {/* 高度なカラーピッカーポップオーバー */}
         <Popover
           open={isColorPickerOpen}
           anchorEl={colorPickerAnchor}
@@ -138,59 +138,10 @@ const AppNavigation: React.FC = () => {
             horizontal: 'right',
           }}
         >
-          <Paper sx={{ p: 3, minWidth: 300 }}>
-            <Typography variant="h6" gutterBottom>
-              プライマリカラーを選択
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-              <TextField
-                type="color"
-                value={primaryColor}
-                onChange={handleColorChange}
-                sx={{ width: 60 }}
-                InputProps={{
-                  sx: { height: 40 }
-                }}
-              />
-              <TextField
-                label="HEXカラー"
-                value={hexInput}
-                onChange={handleHexInputChange}
-                size="small"
-                sx={{ flexGrow: 1 }}
-                placeholder="#65558F"
-              />
-            </Box>
-            <Typography variant="body2" color="text.secondary">
-              選択したカラーから Material Design 3 の完全なカラーパレットが自動生成されます。
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 1, mt: 2, flexWrap: 'wrap' }}>
-              {[
-                '#65558F', // Material Purple
-                '#1976D2', // Blue
-                '#388E3C', // Green
-                '#F57C00', // Orange
-                '#D32F2F', // Red
-                '#7B1FA2', // Purple
-                '#0097A7', // Cyan
-                '#5D4037', // Brown
-              ].map((color) => (
-                <Box
-                  key={color}
-                  onClick={() => setPrimaryColor(color)}
-                  sx={{
-                    width: 32,
-                    height: 32,
-                    backgroundColor: color,
-                    borderRadius: 1,
-                    cursor: 'pointer',
-                    border: primaryColor === color ? '2px solid white' : '1px solid rgba(0,0,0,0.1)',
-                    boxShadow: primaryColor === color ? '0 0 0 2px currentColor' : 'none',
-                  }}
-                />
-              ))}
-            </Box>
-          </Paper>
+          <AdvancedColorPicker
+            value={primaryColor}
+            onChange={handleColorChange}
+          />
         </Popover>
       </Toolbar>
     </AppBar>

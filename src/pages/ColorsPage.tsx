@@ -49,8 +49,8 @@ const ColorCard: React.FC<ColorCardProps> = ({
 }
 
 const ColorsPage: React.FC = () => {
-    const { mode, primaryColor } = useTheme()
-    const currentColors = useMemo(() => generateColorsFromPrimary(primaryColor)[mode], [primaryColor, mode])
+    const { mode, primaryColor, useOriginalColor } = useTheme()
+    const currentColors = useMemo(() => generateColorsFromPrimary(primaryColor, useOriginalColor)[mode], [primaryColor, useOriginalColor, mode])
 
     const colorGroups = [
         {

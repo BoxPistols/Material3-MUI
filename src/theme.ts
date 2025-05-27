@@ -20,11 +20,7 @@ const isGrayscale = (hex: string): boolean => {
     
     // RGB値の差が小さい場合はグレースケールと判定
     const maxDiff = Math.max(Math.abs(r - g), Math.abs(g - b), Math.abs(r - b));
-    const isGray = maxDiff < 10;
-    
-    console.log(`isGrayscale check for ${hex}: R=${r}, G=${g}, B=${b}, maxDiff=${maxDiff}, isGray=${isGray}`);
-    
-    return isGray;
+    return maxDiff < 10;
 };
 
 // グレースケール色用の特別なカラーパレットを生成する関数
@@ -115,23 +111,113 @@ const generateGrayscaleColors = (primaryColor: string) => {
     };
 };
 
-// プライマリカラーからカラーパレットを生成する関数
-export const generateColorsFromPrimary = (primaryColor: string) => {
-    console.log('generateColorsFromPrimary called with:', primaryColor);
+// オリジナル色を保持してカラーパレットを生成する関数
+const generateColorsWithOriginalPrimary = (primaryColor: string) => {
+    // Material Color Utilitiesで他の色を生成しつつ、プライマリは元の色を使用
+    const materialTheme: MaterialTheme = themeFromSourceColor(
+        argbFromHex(primaryColor)
+    );
     
+    // 明度を計算してコントラストテキストを決定
+    const r = parseInt(primaryColor.slice(1, 3), 16);
+    const g = parseInt(primaryColor.slice(3, 5), 16);
+    const b = parseInt(primaryColor.slice(5, 7), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    const contrastText = brightness > 128 ? '#000000' : '#FFFFFF';
+    
+    return {
+        light: {
+            primary: primaryColor, // オリジナル色を使用
+            onPrimary: contrastText,
+            primaryContainer: argbToHex(materialTheme.palettes.primary.tone(90)),
+            onPrimaryContainer: argbToHex(materialTheme.palettes.primary.tone(10)),
+
+            secondary: argbToHex(materialTheme.palettes.secondary.tone(40)),
+            onSecondary: argbToHex(materialTheme.palettes.secondary.tone(100)),
+            secondaryContainer: argbToHex(materialTheme.palettes.secondary.tone(90)),
+            onSecondaryContainer: argbToHex(materialTheme.palettes.secondary.tone(10)),
+
+            tertiary: argbToHex(materialTheme.palettes.tertiary.tone(40)),
+            onTertiary: argbToHex(materialTheme.palettes.tertiary.tone(100)),
+            tertiaryContainer: argbToHex(materialTheme.palettes.tertiary.tone(90)),
+            onTertiaryContainer: argbToHex(materialTheme.palettes.tertiary.tone(10)),
+
+            error: argbToHex(materialTheme.palettes.error.tone(40)),
+            onError: argbToHex(materialTheme.palettes.error.tone(100)),
+            errorContainer: argbToHex(materialTheme.palettes.error.tone(90)),
+            onErrorContainer: argbToHex(materialTheme.palettes.error.tone(10)),
+
+            background: argbToHex(materialTheme.palettes.neutral.tone(99)),
+            onBackground: argbToHex(materialTheme.palettes.neutral.tone(10)),
+            surface: argbToHex(materialTheme.palettes.neutral.tone(99)),
+            onSurface: argbToHex(materialTheme.palettes.neutral.tone(10)),
+            surfaceVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(90)),
+            onSurfaceVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(30)),
+
+            outline: argbToHex(materialTheme.palettes.neutralVariant.tone(50)),
+            outlineVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(80)),
+            shadow: argbToHex(materialTheme.palettes.neutral.tone(0)),
+            scrim: argbToHex(materialTheme.palettes.neutral.tone(0)),
+
+            inverseSurface: argbToHex(materialTheme.palettes.neutral.tone(20)),
+            inverseOnSurface: argbToHex(materialTheme.palettes.neutral.tone(95)),
+            inversePrimary: argbToHex(materialTheme.palettes.primary.tone(80)),
+        },
+        dark: {
+            primary: primaryColor, // ダークモードでもオリジナル色を使用
+            onPrimary: contrastText,
+            primaryContainer: argbToHex(materialTheme.palettes.primary.tone(30)),
+            onPrimaryContainer: argbToHex(materialTheme.palettes.primary.tone(90)),
+
+            secondary: argbToHex(materialTheme.palettes.secondary.tone(80)),
+            onSecondary: argbToHex(materialTheme.palettes.secondary.tone(20)),
+            secondaryContainer: argbToHex(materialTheme.palettes.secondary.tone(30)),
+            onSecondaryContainer: argbToHex(materialTheme.palettes.secondary.tone(90)),
+
+            tertiary: argbToHex(materialTheme.palettes.tertiary.tone(80)),
+            onTertiary: argbToHex(materialTheme.palettes.tertiary.tone(20)),
+            tertiaryContainer: argbToHex(materialTheme.palettes.tertiary.tone(30)),
+            onTertiaryContainer: argbToHex(materialTheme.palettes.tertiary.tone(90)),
+
+            error: argbToHex(materialTheme.palettes.error.tone(80)),
+            onError: argbToHex(materialTheme.palettes.error.tone(20)),
+            errorContainer: argbToHex(materialTheme.palettes.error.tone(30)),
+            onErrorContainer: argbToHex(materialTheme.palettes.error.tone(90)),
+
+            background: argbToHex(materialTheme.palettes.neutral.tone(10)),
+            onBackground: argbToHex(materialTheme.palettes.neutral.tone(90)),
+            surface: argbToHex(materialTheme.palettes.neutral.tone(10)),
+            onSurface: argbToHex(materialTheme.palettes.neutral.tone(90)),
+            surfaceVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(30)),
+            onSurfaceVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(80)),
+
+            outline: argbToHex(materialTheme.palettes.neutralVariant.tone(60)),
+            outlineVariant: argbToHex(materialTheme.palettes.neutralVariant.tone(30)),
+            shadow: argbToHex(materialTheme.palettes.neutral.tone(0)),
+            scrim: argbToHex(materialTheme.palettes.neutral.tone(0)),
+
+            inverseSurface: argbToHex(materialTheme.palettes.neutral.tone(90)),
+            inverseOnSurface: argbToHex(materialTheme.palettes.neutral.tone(20)),
+            inversePrimary: argbToHex(materialTheme.palettes.primary.tone(40)),
+        },
+    };
+};
+
+// プライマリカラーからカラーパレットを生成する関数
+export const generateColorsFromPrimary = (primaryColor: string, useOriginalColor: boolean = false) => {
     // グレースケール色の場合は特別な処理
     if (isGrayscale(primaryColor)) {
-        console.log('Detected as grayscale:', primaryColor);
         return generateGrayscaleColors(primaryColor);
     }
     
-    console.log('Using Material Color Utilities for:', primaryColor);
+    // オリジナル色を保持する場合の処理
+    if (useOriginalColor) {
+        return generateColorsWithOriginalPrimary(primaryColor);
+    }
+    
     const materialTheme: MaterialTheme = themeFromSourceColor(
         argbFromHex(primaryColor)
     )
-    
-    const generatedPrimary = argbToHex(materialTheme.palettes.primary.tone(40));
-    console.log('Generated primary color:', generatedPrimary);
 
     return {
         light: {
@@ -307,10 +393,11 @@ export const tonalPalettes = {
 // MUIテーマを作成する関数（MUI v7ベースコーディングとの親和性向上）
 export const createMaterialTheme = (
     mode: 'light' | 'dark',
-    primaryColor?: string
+    primaryColor?: string,
+    useOriginalColor?: boolean
 ) => {
     const colors = primaryColor
-        ? generateColorsFromPrimary(primaryColor)[mode]
+        ? generateColorsFromPrimary(primaryColor, useOriginalColor)[mode]
         : mode === 'light'
           ? lightColors
           : darkColors

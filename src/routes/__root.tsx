@@ -8,8 +8,8 @@ import AppNavigation from "../components/AppNavigation"
 import { useMemo } from 'react'
 
 const AppContent: React.FC = () => {
-  const { mode, primaryColor } = useTheme();
-  const theme = useMemo(() => createMaterialTheme(mode, primaryColor), [mode, primaryColor]);
+  const { mode, primaryColor, useOriginalColor } = useTheme();
+  const theme = useMemo(() => createMaterialTheme(mode, primaryColor, useOriginalColor), [mode, primaryColor, useOriginalColor]);
 
   return (
     <MuiThemeProvider theme={theme}>
