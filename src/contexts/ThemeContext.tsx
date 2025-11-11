@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useCall
 import type { ReactNode } from 'react'
 
 type ThemeMode = 'light' | 'dark'
+type DesignVersion = 'md2' | 'md3'
 
 interface ThemeContextType {
     mode: ThemeMode
@@ -11,6 +12,8 @@ interface ThemeContextType {
     setPrimaryColor: (color: string) => void
     useOriginalColor: boolean
     setUseOriginalColor: (use: boolean) => void
+    designVersion: DesignVersion
+    setDesignVersion: (version: DesignVersion) => void
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -22,7 +25,7 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const [mode, setModeState] = useState<ThemeMode>(() => {
         // ローカルストレージから初期値を取得
-        const savedMode = localStorage.getItem('theme-mode') as ThemeMode
+        const savedMode = localStorage.getItem('theme-mode')
         if (savedMode === 'light' || savedMode === 'dark') {
             return savedMode
         }
@@ -44,6 +47,15 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         return savedSetting === 'true' || savedSetting === null // デフォルトでtrueに設定
     })
 
+    const [designVersion, setDesignVersionState] = useState<DesignVersion>(() => {
+        // ローカルストレージからデザインバージョンを取得
+        const savedVersion = localStorage.getItem('design-version')
+        if (savedVersion === 'md2' || savedVersion === 'md3') {
+            return savedVersion
+        }
+        return 'md3'
+    })
+
     const setMode = useCallback((newMode: ThemeMode) => {
         setModeState(newMode)
         localStorage.setItem('theme-mode', newMode)
@@ -57,6 +69,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const setUseOriginalColor = useCallback((use: boolean) => {
         setUseOriginalColorState(use)
         localStorage.setItem('use-original-color', use.toString())
+    }, [])
+
+    const setDesignVersion = useCallback((version: DesignVersion) => {
+        setDesignVersionState(version)
+        localStorage.setItem('design-version', version)
     }, [])
 
     const toggleMode = useCallback(() => {
@@ -84,8 +101,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         primaryColor,
         setPrimaryColor,
         useOriginalColor,
-        setUseOriginalColor
-    }), [mode, primaryColor, useOriginalColor, toggleMode, setMode, setPrimaryColor, setUseOriginalColor])
+        setUseOriginalColor,
+        designVersion,
+        setDesignVersion
+    }), [mode, primaryColor, useOriginalColor, designVersion, toggleMode, setMode, setPrimaryColor, setUseOriginalColor, setDesignVersion])
 
     return (
         <ThemeContext.Provider value={value}>
