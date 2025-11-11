@@ -25,7 +25,7 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const [mode, setModeState] = useState<ThemeMode>(() => {
         // ローカルストレージから初期値を取得
-        const savedMode = localStorage.getItem('theme-mode') as ThemeMode
+        const savedMode = localStorage.getItem('theme-mode')
         if (savedMode === 'light' || savedMode === 'dark') {
             return savedMode
         }
@@ -49,8 +49,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
     const [designVersion, setDesignVersionState] = useState<DesignVersion>(() => {
         // ローカルストレージからデザインバージョンを取得
-        const savedVersion = localStorage.getItem('design-version') as DesignVersion
-        return savedVersion === 'md2' || savedVersion === 'md3' ? savedVersion : 'md3'
+        const savedVersion = localStorage.getItem('design-version')
+        if (savedVersion === 'md2' || savedVersion === 'md3') {
+            return savedVersion
+        }
+        return 'md3'
     })
 
     const setMode = useCallback((newMode: ThemeMode) => {

@@ -40,31 +40,28 @@ const TokensPage: React.FC = () => {
   // 現在のカラースキームを取得
   const currentColors = generateColorsFromPrimary(primaryColor, useOriginalColor)[mode]
 
+  // ファイルダウンロード用のヘルパー関数
+  const downloadFile = (content: string, mimeType: string, filename: string) => {
+    const blob = new Blob([content], { type: mimeType })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
   const handleExport = () => {
     if (exportFormat === 'json') {
       downloadTokensAsJSON(currentColors, mode, `design-tokens-${mode}.json`)
     } else if (exportFormat === 'css') {
       const css = exportAsCSS(currentColors, mode)
-      const blob = new Blob([css], { type: 'text/css' })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `design-tokens-${mode}.css`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
+      downloadFile(css, 'text/css', `design-tokens-${mode}.css`)
     } else {
       const scss = exportAsSCSS(currentColors, mode)
-      const blob = new Blob([scss], { type: 'text/scss' })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `design-tokens-${mode}.scss`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
+      downloadFile(scss, 'text/scss', `design-tokens-${mode}.scss`)
     }
   }
 
@@ -91,8 +88,21 @@ const TokensPage: React.FC = () => {
     event.target.value = ''
   }
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
+  const copyToClipboard = async (text: string) => {
+    if (!navigator.clipboard) {
+      console.error('クリップボードAPIは利用できません。')
+      setImportStatus({ type: 'error', message: 'クリップボードAPIは利用できません' })
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(text)
+      // 成功のフィードバックは視覚的に分かりやすくするため、一時的な成功メッセージを表示
+      setImportStatus({ type: 'success', message: 'クリップボードにコピーしました' })
+      setTimeout(() => setImportStatus(null), 2000)
+    } catch (err) {
+      console.error('クリップボードへのコピーに失敗しました:', err)
+      setImportStatus({ type: 'error', message: 'クリップボードへのコピーに失敗しました' })
+    }
   }
 
   return (
@@ -195,7 +205,7 @@ const TokensPage: React.FC = () => {
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {Object.entries(designTokens.spacing).map(([key, value]) => (
-            <Box key={key} sx={{ flex: '1 1 calc(33.333% - 16px)', minWidth: '280px' }}>
+            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(33.333% - 11px)' }, minWidth: '280px' }}>
               <Card>
                 <CardContent>
                   <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -228,7 +238,7 @@ const TokensPage: React.FC = () => {
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {Object.entries(designTokens.elevation).map(([key, value]) => (
-            <Box key={key} sx={{ flex: '1 1 calc(33.333% - 16px)', minWidth: '280px' }}>
+            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(33.333% - 11px)' }, minWidth: '280px' }}>
               <Paper
                 sx={{
                   p: 3,
@@ -264,7 +274,7 @@ const TokensPage: React.FC = () => {
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {Object.entries(designTokens.corner).map(([key, value]) => (
-            <Box key={key} sx={{ flex: '1 1 calc(33.333% - 16px)', minWidth: '280px' }}>
+            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(33.333% - 11px)' }, minWidth: '280px' }}>
               <Card>
                 <CardContent>
                   <Stack spacing={2}>
@@ -297,7 +307,7 @@ const TokensPage: React.FC = () => {
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {Object.entries(designTokens.animation.duration).map(([key, value]) => (
-            <Box key={key} sx={{ flex: '1 1 calc(25% - 16px)', minWidth: '200px' }}>
+            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(25% - 12px)' }, minWidth: '200px' }}>
               <Card>
                 <CardContent>
                   <Typography variant="subtitle2" color="text.secondary">
@@ -318,7 +328,7 @@ const TokensPage: React.FC = () => {
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {Object.entries(designTokens.animation.easing).map(([key, value]) => (
-            <Box key={key} sx={{ flex: '1 1 calc(50% - 16px)', minWidth: '300px' }}>
+            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' }, minWidth: '300px' }}>
               <Card>
                 <CardContent>
                   <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -350,7 +360,7 @@ const TokensPage: React.FC = () => {
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {Object.entries(designTokens.stateLayer).map(([key, value]) => (
-            <Box key={key} sx={{ flex: '1 1 calc(25% - 16px)', minWidth: '200px' }}>
+            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(25% - 12px)' }, minWidth: '200px' }}>
               <Card>
                 <CardContent>
                   <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
@@ -395,7 +405,7 @@ const TokensPage: React.FC = () => {
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {Object.entries(currentColors).map(([key, value]) => (
-            <Box key={key} sx={{ flex: '1 1 calc(33.333% - 16px)', minWidth: '280px' }}>
+            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(33.333% - 11px)' }, minWidth: '280px' }}>
               <Card>
                 <CardContent>
                   <Stack direction="row" spacing={2} alignItems="center">

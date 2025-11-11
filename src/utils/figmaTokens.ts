@@ -378,5 +378,13 @@ export function exportAsSCSS(
     scss += `$md-corner-${key}: ${value};\n`
   })
 
+  // Elevation
+  scss += '\n// Elevation\n'
+  Object.entries(designTokens.elevation).forEach(([key, value]) => {
+    if (value !== 'none') {
+      scss += `$md-elevation-${key}: ${value};\n`
+    }
+  })
+
   return scss
 }
