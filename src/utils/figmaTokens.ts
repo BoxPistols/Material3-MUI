@@ -265,7 +265,6 @@ export function importFigmaTokens(jsonString: string): FigmaTokensExport {
     throw new Error('Invalid JSON format: ' + message)
   }
 }
-}
 
 /**
  * カラートークンを抽出してテーマに適用可能な形式に変換
