@@ -261,8 +261,10 @@ export function importFigmaTokens(jsonString: string): FigmaTokensExport {
     const parsed = JSON.parse(jsonString)
     return parsed as FigmaTokensExport
   } catch (error) {
-    throw new Error('Invalid JSON format: ' + (error as Error).message)
+    const message = error instanceof Error ? error.message : String(error)
+    throw new Error('Invalid JSON format: ' + message)
   }
+}
 }
 
 /**
