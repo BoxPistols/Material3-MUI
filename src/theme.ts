@@ -5,6 +5,7 @@ import {
     hexFromArgb,
     type Theme as MaterialTheme,
 } from '@material/material-color-utilities'
+import { generateMD2ColorsFromPrimary, md2LightColors, md2DarkColors } from './tokens/md2Colors'
 
 // デフォルトプライマリカラー（濃紺でテスト）
 const DEFAULT_PRIMARY_COLOR = '#003366'
@@ -403,8 +404,62 @@ export const tonalPalettes = {
 export const createMaterialTheme = (
     mode: 'light' | 'dark',
     primaryColor?: string,
-    useOriginalColor?: boolean
+    useOriginalColor?: boolean,
+    designVersion: 'md2' | 'md3' = 'md3'
 ) => {
+    // Material Design 2の場合
+    if (designVersion === 'md2') {
+        const md2Scheme = primaryColor
+            ? generateMD2ColorsFromPrimary(primaryColor, mode)
+            : mode === 'light'
+              ? md2LightColors
+              : md2DarkColors
+
+        return createTheme({
+            palette: {
+                mode,
+                primary: md2Scheme.primary,
+                secondary: md2Scheme.secondary,
+                error: md2Scheme.error,
+                warning: md2Scheme.warning,
+                info: md2Scheme.info,
+                success: md2Scheme.success,
+                grey: md2Scheme.grey,
+                background: md2Scheme.background,
+                text: md2Scheme.text,
+            },
+            spacing: 8, // MD2の8dpグリッド
+            shape: {
+                borderRadius: 4, // MD2のデフォルト角丸
+            },
+            typography: {
+                fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                button: {
+                    textTransform: 'none',
+                    fontWeight: 500,
+                },
+            },
+            components: {
+                MuiButton: {
+                    styleOverrides: {
+                        root: {
+                            borderRadius: 4,
+                            textTransform: 'none',
+                        },
+                    },
+                },
+                MuiCard: {
+                    styleOverrides: {
+                        root: {
+                            borderRadius: 4,
+                        },
+                    },
+                },
+            },
+        })
+    }
+
+    // Material Design 3の場合（既存のロジック）
     const colors = primaryColor
         ? generateColorsFromPrimary(primaryColor, useOriginalColor)[mode]
         : mode === 'light'

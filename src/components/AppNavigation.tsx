@@ -8,16 +8,17 @@ import {
   Tooltip,
   Popover
 } from '@mui/material';
-import { 
-  DarkMode, 
-  LightMode, 
+import {
+  DarkMode,
+  LightMode,
   Palette,
   Home,
   ColorLens,
   SmartButton,
   Widgets,
   TextFields,
-  Dashboard
+  Dashboard,
+  Token
 } from '@mui/icons-material';
 import { Link, useLocation } from '@tanstack/react-router';
 import { useTheme } from '../contexts/ThemeContext';
@@ -33,6 +34,7 @@ const AppNavigation: React.FC = () => {
     { path: '/', label: 'ホーム', icon: Home },
     { path: '/dashboard', label: 'ダッシュボード', icon: Dashboard },
     { path: '/colors', label: 'カラー', icon: ColorLens },
+    { path: '/tokens', label: 'トークン', icon: Token },
     { path: '/buttons', label: 'ボタン', icon: SmartButton },
     { path: '/components', label: 'コンポーネント', icon: Widgets },
     { path: '/typography', label: 'タイポグラフィ', icon: TextFields },

@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TypographyImport } from './routes/typography'
+import { Route as TokensImport } from './routes/tokens'
 import { Route as DashboardImport } from './routes/dashboard'
 import { Route as ComponentsImport } from './routes/components'
 import { Route as ColorsImport } from './routes/colors'
@@ -23,6 +24,12 @@ import { Route as IndexImport } from './routes/index'
 const TypographyRoute = TypographyImport.update({
   id: '/typography',
   path: '/typography',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TokensRoute = TokensImport.update({
+  id: '/tokens',
+  path: '/tokens',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -95,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardImport
       parentRoute: typeof rootRoute
     }
+    '/tokens': {
+      id: '/tokens'
+      path: '/tokens'
+      fullPath: '/tokens'
+      preLoaderRoute: typeof TokensImport
+      parentRoute: typeof rootRoute
+    }
     '/typography': {
       id: '/typography'
       path: '/typography'
@@ -113,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/colors': typeof ColorsRoute
   '/components': typeof ComponentsRoute
   '/dashboard': typeof DashboardRoute
+  '/tokens': typeof TokensRoute
   '/typography': typeof TypographyRoute
 }
 
@@ -122,6 +137,7 @@ export interface FileRoutesByTo {
   '/colors': typeof ColorsRoute
   '/components': typeof ComponentsRoute
   '/dashboard': typeof DashboardRoute
+  '/tokens': typeof TokensRoute
   '/typography': typeof TypographyRoute
 }
 
@@ -132,6 +148,7 @@ export interface FileRoutesById {
   '/colors': typeof ColorsRoute
   '/components': typeof ComponentsRoute
   '/dashboard': typeof DashboardRoute
+  '/tokens': typeof TokensRoute
   '/typography': typeof TypographyRoute
 }
 
@@ -143,6 +160,7 @@ export interface FileRouteTypes {
     | '/colors'
     | '/components'
     | '/dashboard'
+    | '/tokens'
     | '/typography'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -151,6 +169,7 @@ export interface FileRouteTypes {
     | '/colors'
     | '/components'
     | '/dashboard'
+    | '/tokens'
     | '/typography'
   id:
     | '__root__'
@@ -159,6 +178,7 @@ export interface FileRouteTypes {
     | '/colors'
     | '/components'
     | '/dashboard'
+    | '/tokens'
     | '/typography'
   fileRoutesById: FileRoutesById
 }
@@ -169,6 +189,7 @@ export interface RootRouteChildren {
   ColorsRoute: typeof ColorsRoute
   ComponentsRoute: typeof ComponentsRoute
   DashboardRoute: typeof DashboardRoute
+  TokensRoute: typeof TokensRoute
   TypographyRoute: typeof TypographyRoute
 }
 
@@ -178,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   ColorsRoute: ColorsRoute,
   ComponentsRoute: ComponentsRoute,
   DashboardRoute: DashboardRoute,
+  TokensRoute: TokensRoute,
   TypographyRoute: TypographyRoute,
 }
 
@@ -196,6 +218,7 @@ export const routeTree = rootRoute
         "/colors",
         "/components",
         "/dashboard",
+        "/tokens",
         "/typography"
       ]
     },
@@ -213,6 +236,9 @@ export const routeTree = rootRoute
     },
     "/dashboard": {
       "filePath": "dashboard.tsx"
+    },
+    "/tokens": {
+      "filePath": "tokens.tsx"
     },
     "/typography": {
       "filePath": "typography.tsx"
