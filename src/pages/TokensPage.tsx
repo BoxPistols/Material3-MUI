@@ -83,7 +83,8 @@ const TokensPage: React.FC = () => {
         setImportStatus({ type: 'error', message: 'カラートークンが見つかりませんでした' })
       }
     } catch (error) {
-      setImportStatus({ type: 'error', message: `インポートエラー: ${(error as Error).message}` })
+      const message = error instanceof Error ? error.message : String(error);
+      setImportStatus({ type: 'error', message: `インポートエラー: ${message}` })
     }
 
     // Reset file input
