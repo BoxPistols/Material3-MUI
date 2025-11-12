@@ -203,30 +203,28 @@ const TokensPage: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           スペーシング
         </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', lg: 'repeat(4, 1fr)' }, gap: 1.5 }}>
           {Object.entries(designTokens.spacing).map(([key, value]) => (
-            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(33.333% - 11px)' }, minWidth: '280px' }}>
-              <Card>
-                <CardContent>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Box>
-                      <Typography variant="subtitle2" color="text.secondary">
-                        {key}
-                      </Typography>
-                      <Typography variant="h6">{value}</Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        width: value,
-                        height: '24px',
-                        backgroundColor: 'primary.main',
-                        borderRadius: 1,
-                      }}
-                    />
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Box>
+            <Card key={key}>
+              <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Box>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                      {key}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>{value}</Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: value,
+                      height: '20px',
+                      backgroundColor: 'primary.main',
+                      borderRadius: 0.5,
+                    }}
+                  />
+                </Stack>
+              </CardContent>
+            </Card>
           ))}
         </Box>
       </Box>
@@ -236,27 +234,27 @@ const TokensPage: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           Elevation
         </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
           {Object.entries(designTokens.elevation).map(([key, value]) => (
-            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(33.333% - 11px)' }, minWidth: '280px' }}>
+            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 6px)', md: '1 1 calc(25% - 9px)' }, minWidth: '180px' }}>
               <Paper
                 sx={{
-                  p: 3,
-                  height: 120,
+                  p: 2,
+                  height: 80,
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   boxShadow: value,
                 }}
               >
-                <Typography variant="subtitle2" color="text.secondary">
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
                   {key}
                 </Typography>
                 <Tooltip title="コピー">
                   <IconButton
                     size="small"
                     onClick={() => copyToClipboard(value)}
-                    sx={{ alignSelf: 'flex-end' }}
+                    sx={{ alignSelf: 'flex-end', mt: 'auto' }}
                   >
                     <CopyIcon fontSize="small" />
                   </IconButton>
@@ -272,30 +270,28 @@ const TokensPage: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           Corner Radius
         </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', lg: 'repeat(4, 1fr)' }, gap: 1.5 }}>
           {Object.entries(designTokens.corner).map(([key, value]) => (
-            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(33.333% - 11px)' }, minWidth: '280px' }}>
-              <Card>
-                <CardContent>
-                  <Stack spacing={2}>
-                    <Box>
-                      <Typography variant="subtitle2" color="text.secondary">
-                        {key}
-                      </Typography>
-                      <Typography variant="h6">{value}</Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        width: '100%',
-                        height: 60,
-                        backgroundColor: 'primary.main',
-                        borderRadius: value,
-                      }}
-                    />
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Box>
+            <Card key={key}>
+              <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+                <Stack spacing={1}>
+                  <Box>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                      {key}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>{value}</Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: '100%',
+                      height: 45,
+                      backgroundColor: 'primary.main',
+                      borderRadius: value,
+                    }}
+                  />
+                </Stack>
+              </CardContent>
+            </Card>
           ))}
         </Box>
       </Box>
@@ -305,18 +301,16 @@ const TokensPage: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           Animation Duration
         </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(6, 1fr)' }, gap: 1.5 }}>
           {Object.entries(designTokens.animation.duration).map(([key, value]) => (
-            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(25% - 12px)' }, minWidth: '200px' }}>
-              <Card>
-                <CardContent>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    {key}
-                  </Typography>
-                  <Typography variant="h6">{value}</Typography>
-                </CardContent>
-              </Card>
-            </Box>
+            <Card key={key}>
+              <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                  {key}
+                </Typography>
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>{value}</Typography>
+              </CardContent>
+            </Card>
           ))}
         </Box>
       </Box>
@@ -326,29 +320,27 @@ const TokensPage: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           Animation Easing
         </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 1.5 }}>
           {Object.entries(designTokens.animation.easing).map(([key, value]) => (
-            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' }, minWidth: '300px' }}>
-              <Card>
-                <CardContent>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Box>
-                      <Typography variant="subtitle2" color="text.secondary">
-                        {key}
-                      </Typography>
-                      <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
-                        {value}
-                      </Typography>
-                    </Box>
-                    <Tooltip title="コピー">
-                      <IconButton size="small" onClick={() => copyToClipboard(value)}>
-                        <CopyIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Box>
+            <Card key={key}>
+              <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                      {key}
+                    </Typography>
+                    <Typography variant="caption" sx={{ fontFamily: 'monospace', fontSize: '0.7rem', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {value}
+                    </Typography>
+                  </Box>
+                  <Tooltip title="コピー">
+                    <IconButton size="small" onClick={() => copyToClipboard(value)} sx={{ flexShrink: 0 }}>
+                      <CopyIcon sx={{ fontSize: '0.9rem' }} />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
+              </CardContent>
+            </Card>
           ))}
         </Box>
       </Box>
@@ -358,42 +350,40 @@ const TokensPage: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           State Layer Opacity
         </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', lg: 'repeat(5, 1fr)' }, gap: 1.5 }}>
           {Object.entries(designTokens.stateLayer).map(([key, value]) => (
-            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(25% - 12px)' }, minWidth: '200px' }}>
-              <Card>
-                <CardContent>
-                  <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-                    {key}
-                  </Typography>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
-                    {value.opacity}
-                  </Typography>
+            <Card key={key}>
+              <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+                <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block', fontWeight: 600 }}>
+                  {key}
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                  {value.opacity}
+                </Typography>
+                <Box
+                  sx={{
+                    width: '100%',
+                    height: 30,
+                    backgroundColor: 'primary.main',
+                    position: 'relative',
+                    borderRadius: 0.5,
+                  }}
+                >
                   <Box
                     sx={{
-                      width: '100%',
-                      height: 40,
-                      backgroundColor: 'primary.main',
-                      position: 'relative',
-                      borderRadius: 1,
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: 'background.paper',
+                      opacity: 1 - value.opacity,
+                      borderRadius: 0.5,
                     }}
-                  >
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'background.paper',
-                        opacity: 1 - value.opacity,
-                        borderRadius: 1,
-                      }}
-                    />
-                  </Box>
-                </CardContent>
-              </Card>
-            </Box>
+                  />
+                </Box>
+              </CardContent>
+            </Card>
           ))}
         </Box>
       </Box>
@@ -403,41 +393,40 @@ const TokensPage: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           カラーパレット（現在のテーマ: {mode}）
         </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', lg: 'repeat(4, 1fr)' }, gap: 1.5 }}>
           {Object.entries(currentColors).map(([key, value]) => (
-            <Box key={key} sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 calc(33.333% - 11px)' }, minWidth: '280px' }}>
-              <Card>
-                <CardContent>
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Box
-                      sx={{
-                        width: 48,
-                        height: 48,
-                        backgroundColor: value,
-                        borderRadius: 1,
-                        border: '1px solid',
-                        borderColor: 'divider',
-                      }}
-                    />
-                    <Box sx={{ flexGrow: 1 }}>
-                      <Typography variant="subtitle2">{key}</Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}
-                      >
-                        {value}
-                      </Typography>
-                    </Box>
-                    <Tooltip title="コピー">
-                      <IconButton size="small" onClick={() => copyToClipboard(value)}>
-                        <CopyIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Box>
+            <Card key={key} sx={{ minHeight: 70 }}>
+              <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Box
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      flexShrink: 0,
+                      backgroundColor: value,
+                      borderRadius: 1,
+                      border: '1px solid',
+                      borderColor: 'divider',
+                    }}
+                  />
+                  <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                    <Typography variant="caption" sx={{ fontWeight: 600, display: 'block' }}>{key}</Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontFamily: 'monospace', fontSize: '0.7rem', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    >
+                      {value}
+                    </Typography>
+                  </Box>
+                  <Tooltip title="コピー">
+                    <IconButton size="small" onClick={() => copyToClipboard(value)} sx={{ flexShrink: 0 }}>
+                      <CopyIcon sx={{ fontSize: '0.9rem' }} />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
+              </CardContent>
+            </Card>
           ))}
         </Box>
       </Box>
