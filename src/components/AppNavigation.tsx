@@ -118,7 +118,7 @@ const AppNavigation: React.FC = () => {
                       backgroundColor: active ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
                     }}
                   >
-                    <IconComponent fontSize="small" />
+                    <IconComponent sx={{ fontSize: 'small' }} />
                   </IconButton>
                 </Tooltip>
               );

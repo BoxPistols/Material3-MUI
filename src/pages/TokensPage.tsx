@@ -403,7 +403,7 @@ const TokensPage: React.FC = () => {
                       width: 36,
                       height: 36,
                       flexShrink: 0,
-                      backgroundColor: value,
+                      backgroundColor: value as string,
                       borderRadius: 1,
                       border: '1px solid',
                       borderColor: 'divider',
@@ -416,11 +416,11 @@ const TokensPage: React.FC = () => {
                       color="text.secondary"
                       sx={{ fontFamily: 'monospace', fontSize: '0.7rem', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis' }}
                     >
-                      {value}
+                      {value as string}
                     </Typography>
                   </Box>
                   <Tooltip title="コピー">
-                    <IconButton size="small" onClick={() => copyToClipboard(value)} sx={{ flexShrink: 0 }}>
+                    <IconButton size="small" onClick={() => copyToClipboard(value as string)} sx={{ flexShrink: 0 }}>
                       <CopyIcon sx={{ fontSize: '0.9rem' }} />
                     </IconButton>
                   </Tooltip>

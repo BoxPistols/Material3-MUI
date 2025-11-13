@@ -13,8 +13,74 @@ const DEFAULT_PRIMARY_COLOR = '#003366'
 // ARGBからHEXに変換するヘルパー関数
 const argbToHex = (argb: number): string => hexFromArgb(argb)
 
+// カラーパレット型定義
+type ColorPalette = {
+    light: {
+        primary: string;
+        onPrimary: string;
+        primaryContainer: string;
+        onPrimaryContainer: string;
+        secondary: string;
+        onSecondary: string;
+        secondaryContainer: string;
+        onSecondaryContainer: string;
+        tertiary: string;
+        onTertiary: string;
+        tertiaryContainer: string;
+        onTertiaryContainer: string;
+        error: string;
+        onError: string;
+        errorContainer: string;
+        onErrorContainer: string;
+        background: string;
+        onBackground: string;
+        surface: string;
+        onSurface: string;
+        surfaceVariant: string;
+        onSurfaceVariant: string;
+        outline: string;
+        outlineVariant: string;
+        shadow: string;
+        scrim: string;
+        inverseSurface: string;
+        inverseOnSurface: string;
+        inversePrimary: string;
+    };
+    dark: {
+        primary: string;
+        onPrimary: string;
+        primaryContainer: string;
+        onPrimaryContainer: string;
+        secondary: string;
+        onSecondary: string;
+        secondaryContainer: string;
+        onSecondaryContainer: string;
+        tertiary: string;
+        onTertiary: string;
+        tertiaryContainer: string;
+        onTertiaryContainer: string;
+        error: string;
+        onError: string;
+        errorContainer: string;
+        onErrorContainer: string;
+        background: string;
+        onBackground: string;
+        surface: string;
+        onSurface: string;
+        surfaceVariant: string;
+        onSurfaceVariant: string;
+        outline: string;
+        outlineVariant: string;
+        shadow: string;
+        scrim: string;
+        inverseSurface: string;
+        inverseOnSurface: string;
+        inversePrimary: string;
+    };
+};
+
 // カラー生成結果のキャッシュ
-const colorCache = new Map<string, ReturnType<typeof generateColorsFromPrimary>>()
+const colorCache = new Map<string, ColorPalette>()
 const CACHE_MAX_SIZE = 50 // キャッシュサイズの上限
 
 // 彩度の低い色（グレースケール）かどうかを判定する関数
@@ -29,7 +95,7 @@ const isGrayscale = (hex: string): boolean => {
 };
 
 // グレースケール色用の特別なカラーパレットを生成する関数
-const generateGrayscaleColors = (primaryColor: string) => {
+const generateGrayscaleColors = (primaryColor: string): ColorPalette => {
     const r = parseInt(primaryColor.slice(1, 3), 16);
     const g = parseInt(primaryColor.slice(3, 5), 16);
     const b = parseInt(primaryColor.slice(5, 7), 16);
@@ -117,7 +183,7 @@ const generateGrayscaleColors = (primaryColor: string) => {
 };
 
 // オリジナル色を保持してカラーパレットを生成する関数
-const generateColorsWithOriginalPrimary = (primaryColor: string) => {
+const generateColorsWithOriginalPrimary = (primaryColor: string): ColorPalette => {
     // Material Color Utilitiesで他の色を生成しつつ、プライマリは元の色を使用
     const materialTheme: MaterialTheme = themeFromSourceColor(
         argbFromHex(primaryColor)
@@ -216,7 +282,7 @@ const generateColorsWithOriginalPrimary = (primaryColor: string) => {
 };
 
 // プライマリカラーからカラーパレットを生成する関数（メモ化付き）
-export const generateColorsFromPrimary = (primaryColor: string, useOriginalColor: boolean = false) => {
+export const generateColorsFromPrimary = (primaryColor: string, useOriginalColor: boolean = false): ColorPalette => {
     // キャッシュキーを生成
     const cacheKey = `${primaryColor}-${useOriginalColor}`
 
@@ -226,7 +292,7 @@ export const generateColorsFromPrimary = (primaryColor: string, useOriginalColor
     }
 
     // カラーパレットを生成
-    let colors: ReturnType<typeof generateGrayscaleColors>
+    let colors: ColorPalette
 
     // グレースケール色の場合は特別な処理
     if (isGrayscale(primaryColor)) {
