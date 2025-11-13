@@ -24,10 +24,14 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const [mode, setModeState] = useState<ThemeMode>(() => {
-        // ローカルストレージから初期値を取得
-        const savedMode = localStorage.getItem('theme-mode')
-        if (savedMode === 'light' || savedMode === 'dark') {
-            return savedMode
+        try {
+            // ローカルストレージから初期値を取得
+            const savedMode = localStorage.getItem('theme-mode')
+            if (savedMode === 'light' || savedMode === 'dark') {
+                return savedMode
+            }
+        } catch (error) {
+            console.error('Failed to read theme mode from localStorage:', error)
         }
         // システム設定を確認
         return window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -36,57 +40,99 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     })
 
     const [primaryColor, setPrimaryColorState] = useState<string>(() => {
-        // ローカルストレージからプライマリカラーを取得
-        const savedColor = localStorage.getItem('primary-color')
-        return savedColor || '#003366' // 濃紺をデフォルトに設定（テスト用）
+        try {
+            // ローカルストレージからプライマリカラーを取得
+            const savedColor = localStorage.getItem('primary-color')
+            if (savedColor) return savedColor
+        } catch (error) {
+            console.error('Failed to read primary color from localStorage:', error)
+        }
+        return '#003366' // 濃紺をデフォルトに設定
     })
 
     const [useOriginalColor, setUseOriginalColorState] = useState<boolean>(() => {
-        // ローカルストレージからオリジナル色使用設定を取得
-        const savedSetting = localStorage.getItem('use-original-color')
-        return savedSetting === 'true' || savedSetting === null // デフォルトでtrueに設定
+        try {
+            // ローカルストレージからオリジナル色使用設定を取得
+            const savedSetting = localStorage.getItem('use-original-color')
+            return savedSetting === 'true' || savedSetting === null // デフォルトでtrueに設定
+        } catch (error) {
+            console.error('Failed to read use-original-color from localStorage:', error)
+            return true
+        }
     })
 
     const [designVersion, setDesignVersionState] = useState<DesignVersion>(() => {
-        // ローカルストレージからデザインバージョンを取得
-        const savedVersion = localStorage.getItem('design-version')
-        if (savedVersion === 'md2' || savedVersion === 'md3') {
-            return savedVersion
+        try {
+            // ローカルストレージからデザインバージョンを取得
+            const savedVersion = localStorage.getItem('design-version')
+            if (savedVersion === 'md2' || savedVersion === 'md3') {
+                return savedVersion
+            }
+        } catch (error) {
+            console.error('Failed to read design version from localStorage:', error)
         }
         return 'md3'
     })
 
     const setMode = useCallback((newMode: ThemeMode) => {
         setModeState(newMode)
-        localStorage.setItem('theme-mode', newMode)
+        try {
+            localStorage.setItem('theme-mode', newMode)
+        } catch (error) {
+            console.error('Failed to save theme mode to localStorage:', error)
+        }
     }, [])
 
     const setPrimaryColor = useCallback((newColor: string) => {
         setPrimaryColorState(newColor)
-        localStorage.setItem('primary-color', newColor)
+        try {
+            localStorage.setItem('primary-color', newColor)
+        } catch (error) {
+            console.error('Failed to save primary color to localStorage:', error)
+        }
     }, [])
 
     const setUseOriginalColor = useCallback((use: boolean) => {
         setUseOriginalColorState(use)
-        localStorage.setItem('use-original-color', use.toString())
+        try {
+            localStorage.setItem('use-original-color', use.toString())
+        } catch (error) {
+            console.error('Failed to save use-original-color to localStorage:', error)
+        }
     }, [])
 
     const setDesignVersion = useCallback((version: DesignVersion) => {
         setDesignVersionState(version)
-        localStorage.setItem('design-version', version)
+        try {
+            localStorage.setItem('design-version', version)
+        } catch (error) {
+            console.error('Failed to save design version to localStorage:', error)
+        }
     }, [])
 
     const toggleMode = useCallback(() => {
-        setMode(mode === 'light' ? 'dark' : 'light')
-    }, [mode, setMode])
+        setModeState((prev) => {
+            const newMode = prev === 'light' ? 'dark' : 'light'
+            try {
+                localStorage.setItem('theme-mode', newMode)
+            } catch (error) {
+                console.error('Failed to save theme mode to localStorage:', error)
+            }
+            return newMode
+        })
+    }, [])
 
     // システム設定の変更を監視
     useEffect(() => {
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
         const handleChange = (e: MediaQueryListEvent) => {
-            // ローカルストレージに保存された設定がない場合のみシステム設定に従う
-            if (!localStorage.getItem('theme-mode')) {
-                setModeState(e.matches ? 'dark' : 'light')
+            try {
+                // ローカルストレージに保存された設定がない場合のみシステム設定に従う
+                if (!localStorage.getItem('theme-mode')) {
+                    setModeState(e.matches ? 'dark' : 'light')
+                }
+            } catch (error) {
+                console.error('Failed to check localStorage in system theme listener:', error)
             }
         }
 

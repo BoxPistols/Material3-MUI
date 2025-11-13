@@ -13,6 +13,10 @@ const DEFAULT_PRIMARY_COLOR = '#003366'
 // ARGBからHEXに変換するヘルパー関数
 const argbToHex = (argb: number): string => hexFromArgb(argb)
 
+// カラー生成結果のキャッシュ
+const colorCache = new Map<string, ReturnType<typeof generateColorsFromPrimary>>()
+const CACHE_MAX_SIZE = 50 // キャッシュサイズの上限
+
 // 彩度の低い色（グレースケール）かどうかを判定する関数
 const isGrayscale = (hex: string): boolean => {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -132,9 +136,7 @@ const generateColorsWithOriginalPrimary = (primaryColor: string) => {
     
     const luminance = 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
     const contrastText = luminance > 0.179 ? '#000000' : '#FFFFFF'; // より厳密な閾値
-    
-    console.log(`Color: ${primaryColor}, Luminance: ${luminance.toFixed(3)}, Contrast: ${contrastText}`); // デバッグ用
-    
+
     return {
         light: {
             primary: primaryColor, // オリジナル色を使用
@@ -213,138 +215,159 @@ const generateColorsWithOriginalPrimary = (primaryColor: string) => {
     };
 };
 
-// プライマリカラーからカラーパレットを生成する関数
+// プライマリカラーからカラーパレットを生成する関数（メモ化付き）
 export const generateColorsFromPrimary = (primaryColor: string, useOriginalColor: boolean = false) => {
+    // キャッシュキーを生成
+    const cacheKey = `${primaryColor}-${useOriginalColor}`
+
+    // キャッシュにヒットした場合は返す
+    if (colorCache.has(cacheKey)) {
+        return colorCache.get(cacheKey)!
+    }
+
+    // カラーパレットを生成
+    let colors: ReturnType<typeof generateGrayscaleColors>
+
     // グレースケール色の場合は特別な処理
     if (isGrayscale(primaryColor)) {
-        return generateGrayscaleColors(primaryColor);
+        colors = generateGrayscaleColors(primaryColor);
     }
-    
     // オリジナル色を保持する場合の処理
-    if (useOriginalColor) {
-        return generateColorsWithOriginalPrimary(primaryColor);
+    else if (useOriginalColor) {
+        colors = generateColorsWithOriginalPrimary(primaryColor);
     }
-    
-    const materialTheme: MaterialTheme = themeFromSourceColor(
-        argbFromHex(primaryColor)
-    )
+    // 通常のMaterial Color Utilities処理
+    else {
+        const materialTheme: MaterialTheme = themeFromSourceColor(
+            argbFromHex(primaryColor)
+        )
 
-    return {
-        light: {
-            primary: argbToHex(materialTheme.palettes.primary.tone(40)),
-            onPrimary: argbToHex(materialTheme.palettes.primary.tone(100)),
-            primaryContainer: argbToHex(
-                materialTheme.palettes.primary.tone(90)
-            ),
-            onPrimaryContainer: argbToHex(
-                materialTheme.palettes.primary.tone(10)
-            ),
+        colors = {
+            light: {
+                primary: argbToHex(materialTheme.palettes.primary.tone(40)),
+                onPrimary: argbToHex(materialTheme.palettes.primary.tone(100)),
+                primaryContainer: argbToHex(
+                    materialTheme.palettes.primary.tone(90)
+                ),
+                onPrimaryContainer: argbToHex(
+                    materialTheme.palettes.primary.tone(10)
+                ),
 
-            secondary: argbToHex(materialTheme.palettes.secondary.tone(40)),
-            onSecondary: argbToHex(materialTheme.palettes.secondary.tone(100)),
-            secondaryContainer: argbToHex(
-                materialTheme.palettes.secondary.tone(90)
-            ),
-            onSecondaryContainer: argbToHex(
-                materialTheme.palettes.secondary.tone(10)
-            ),
+                secondary: argbToHex(materialTheme.palettes.secondary.tone(40)),
+                onSecondary: argbToHex(materialTheme.palettes.secondary.tone(100)),
+                secondaryContainer: argbToHex(
+                    materialTheme.palettes.secondary.tone(90)
+                ),
+                onSecondaryContainer: argbToHex(
+                    materialTheme.palettes.secondary.tone(10)
+                ),
 
-            tertiary: argbToHex(materialTheme.palettes.tertiary.tone(40)),
-            onTertiary: argbToHex(materialTheme.palettes.tertiary.tone(100)),
-            tertiaryContainer: argbToHex(
-                materialTheme.palettes.tertiary.tone(90)
-            ),
-            onTertiaryContainer: argbToHex(
-                materialTheme.palettes.tertiary.tone(10)
-            ),
+                tertiary: argbToHex(materialTheme.palettes.tertiary.tone(40)),
+                onTertiary: argbToHex(materialTheme.palettes.tertiary.tone(100)),
+                tertiaryContainer: argbToHex(
+                    materialTheme.palettes.tertiary.tone(90)
+                ),
+                onTertiaryContainer: argbToHex(
+                    materialTheme.palettes.tertiary.tone(10)
+                ),
 
-            error: argbToHex(materialTheme.palettes.error.tone(40)),
-            onError: argbToHex(materialTheme.palettes.error.tone(100)),
-            errorContainer: argbToHex(materialTheme.palettes.error.tone(90)),
-            onErrorContainer: argbToHex(materialTheme.palettes.error.tone(10)),
+                error: argbToHex(materialTheme.palettes.error.tone(40)),
+                onError: argbToHex(materialTheme.palettes.error.tone(100)),
+                errorContainer: argbToHex(materialTheme.palettes.error.tone(90)),
+                onErrorContainer: argbToHex(materialTheme.palettes.error.tone(10)),
 
-            background: argbToHex(materialTheme.palettes.neutral.tone(99)),
-            onBackground: argbToHex(materialTheme.palettes.neutral.tone(10)),
-            surface: argbToHex(materialTheme.palettes.neutral.tone(99)),
-            onSurface: argbToHex(materialTheme.palettes.neutral.tone(10)),
-            surfaceVariant: argbToHex(
-                materialTheme.palettes.neutralVariant.tone(90)
-            ),
-            onSurfaceVariant: argbToHex(
-                materialTheme.palettes.neutralVariant.tone(30)
-            ),
+                background: argbToHex(materialTheme.palettes.neutral.tone(99)),
+                onBackground: argbToHex(materialTheme.palettes.neutral.tone(10)),
+                surface: argbToHex(materialTheme.palettes.neutral.tone(99)),
+                onSurface: argbToHex(materialTheme.palettes.neutral.tone(10)),
+                surfaceVariant: argbToHex(
+                    materialTheme.palettes.neutralVariant.tone(90)
+                ),
+                onSurfaceVariant: argbToHex(
+                    materialTheme.palettes.neutralVariant.tone(30)
+                ),
 
-            outline: argbToHex(materialTheme.palettes.neutralVariant.tone(50)),
-            outlineVariant: argbToHex(
-                materialTheme.palettes.neutralVariant.tone(80)
-            ),
-            shadow: argbToHex(materialTheme.palettes.neutral.tone(0)),
-            scrim: argbToHex(materialTheme.palettes.neutral.tone(0)),
+                outline: argbToHex(materialTheme.palettes.neutralVariant.tone(50)),
+                outlineVariant: argbToHex(
+                    materialTheme.palettes.neutralVariant.tone(80)
+                ),
+                shadow: argbToHex(materialTheme.palettes.neutral.tone(0)),
+                scrim: argbToHex(materialTheme.palettes.neutral.tone(0)),
 
-            inverseSurface: argbToHex(materialTheme.palettes.neutral.tone(20)),
-            inverseOnSurface: argbToHex(
-                materialTheme.palettes.neutral.tone(95)
-            ),
-            inversePrimary: argbToHex(materialTheme.palettes.primary.tone(80)),
-        },
-        dark: {
-            primary: argbToHex(materialTheme.palettes.primary.tone(80)),
-            onPrimary: argbToHex(materialTheme.palettes.primary.tone(20)),
-            primaryContainer: argbToHex(
-                materialTheme.palettes.primary.tone(30)
-            ),
-            onPrimaryContainer: argbToHex(
-                materialTheme.palettes.primary.tone(90)
-            ),
+                inverseSurface: argbToHex(materialTheme.palettes.neutral.tone(20)),
+                inverseOnSurface: argbToHex(
+                    materialTheme.palettes.neutral.tone(95)
+                ),
+                inversePrimary: argbToHex(materialTheme.palettes.primary.tone(80)),
+            },
+            dark: {
+                primary: argbToHex(materialTheme.palettes.primary.tone(80)),
+                onPrimary: argbToHex(materialTheme.palettes.primary.tone(20)),
+                primaryContainer: argbToHex(
+                    materialTheme.palettes.primary.tone(30)
+                ),
+                onPrimaryContainer: argbToHex(
+                    materialTheme.palettes.primary.tone(90)
+                ),
 
-            secondary: argbToHex(materialTheme.palettes.secondary.tone(80)),
-            onSecondary: argbToHex(materialTheme.palettes.secondary.tone(20)),
-            secondaryContainer: argbToHex(
-                materialTheme.palettes.secondary.tone(30)
-            ),
-            onSecondaryContainer: argbToHex(
-                materialTheme.palettes.secondary.tone(90)
-            ),
+                secondary: argbToHex(materialTheme.palettes.secondary.tone(80)),
+                onSecondary: argbToHex(materialTheme.palettes.secondary.tone(20)),
+                secondaryContainer: argbToHex(
+                    materialTheme.palettes.secondary.tone(30)
+                ),
+                onSecondaryContainer: argbToHex(
+                    materialTheme.palettes.secondary.tone(90)
+                ),
 
-            tertiary: argbToHex(materialTheme.palettes.tertiary.tone(80)),
-            onTertiary: argbToHex(materialTheme.palettes.tertiary.tone(20)),
-            tertiaryContainer: argbToHex(
-                materialTheme.palettes.tertiary.tone(30)
-            ),
-            onTertiaryContainer: argbToHex(
-                materialTheme.palettes.tertiary.tone(90)
-            ),
+                tertiary: argbToHex(materialTheme.palettes.tertiary.tone(80)),
+                onTertiary: argbToHex(materialTheme.palettes.tertiary.tone(20)),
+                tertiaryContainer: argbToHex(
+                    materialTheme.palettes.tertiary.tone(30)
+                ),
+                onTertiaryContainer: argbToHex(
+                    materialTheme.palettes.tertiary.tone(90)
+                ),
 
-            error: argbToHex(materialTheme.palettes.error.tone(80)),
-            onError: argbToHex(materialTheme.palettes.error.tone(20)),
-            errorContainer: argbToHex(materialTheme.palettes.error.tone(30)),
-            onErrorContainer: argbToHex(materialTheme.palettes.error.tone(90)),
+                error: argbToHex(materialTheme.palettes.error.tone(80)),
+                onError: argbToHex(materialTheme.palettes.error.tone(20)),
+                errorContainer: argbToHex(materialTheme.palettes.error.tone(30)),
+                onErrorContainer: argbToHex(materialTheme.palettes.error.tone(90)),
 
-            background: argbToHex(materialTheme.palettes.neutral.tone(10)),
-            onBackground: argbToHex(materialTheme.palettes.neutral.tone(90)),
-            surface: argbToHex(materialTheme.palettes.neutral.tone(10)),
-            onSurface: argbToHex(materialTheme.palettes.neutral.tone(90)),
-            surfaceVariant: argbToHex(
-                materialTheme.palettes.neutralVariant.tone(30)
-            ),
-            onSurfaceVariant: argbToHex(
-                materialTheme.palettes.neutralVariant.tone(80)
-            ),
+                background: argbToHex(materialTheme.palettes.neutral.tone(10)),
+                onBackground: argbToHex(materialTheme.palettes.neutral.tone(90)),
+                surface: argbToHex(materialTheme.palettes.neutral.tone(10)),
+                onSurface: argbToHex(materialTheme.palettes.neutral.tone(90)),
+                surfaceVariant: argbToHex(
+                    materialTheme.palettes.neutralVariant.tone(30)
+                ),
+                onSurfaceVariant: argbToHex(
+                    materialTheme.palettes.neutralVariant.tone(80)
+                ),
 
-            outline: argbToHex(materialTheme.palettes.neutralVariant.tone(60)),
-            outlineVariant: argbToHex(
-                materialTheme.palettes.neutralVariant.tone(30)
-            ),
-            shadow: argbToHex(materialTheme.palettes.neutral.tone(0)),
-            scrim: argbToHex(materialTheme.palettes.neutral.tone(0)),
+                outline: argbToHex(materialTheme.palettes.neutralVariant.tone(60)),
+                outlineVariant: argbToHex(
+                    materialTheme.palettes.neutralVariant.tone(30)
+                ),
+                shadow: argbToHex(materialTheme.palettes.neutral.tone(0)),
+                scrim: argbToHex(materialTheme.palettes.neutral.tone(0)),
 
-            inverseSurface: argbToHex(materialTheme.palettes.neutral.tone(90)),
-            inverseOnSurface: argbToHex(
-                materialTheme.palettes.neutral.tone(20)
-            ),
-            inversePrimary: argbToHex(materialTheme.palettes.primary.tone(40)),
-        },
+                inverseSurface: argbToHex(materialTheme.palettes.neutral.tone(90)),
+                inverseOnSurface: argbToHex(
+                    materialTheme.palettes.neutral.tone(20)
+                ),
+                inversePrimary: argbToHex(materialTheme.palettes.primary.tone(40)),
+            },
+        }
     }
+
+    // キャッシュに保存（LRU方式）
+    if (colorCache.size >= CACHE_MAX_SIZE) {
+        const firstKey = colorCache.keys().next().value
+        colorCache.delete(firstKey)
+    }
+    colorCache.set(cacheKey, colors)
+
+    return colors
 }
 
 // デフォルトカラーパレット

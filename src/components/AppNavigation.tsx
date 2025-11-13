@@ -1,10 +1,10 @@
-import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
-  Button, 
-  Box, 
-  IconButton, 
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  IconButton,
   Tooltip,
   Popover
 } from '@mui/material';
@@ -22,23 +22,31 @@ import {
 } from '@mui/icons-material';
 import { Link, useLocation } from '@tanstack/react-router';
 import { useTheme } from '../contexts/ThemeContext';
-import { useState } from 'react';
+import { useState, useMemo, type ComponentType } from 'react';
 import AdvancedColorPicker from './AdvancedColorPicker';
+
+// ナビゲーション項目の型定義
+interface NavItem {
+  path: string;
+  label: string;
+  icon: ComponentType;
+}
+
+// ナビゲーション項目をコンポーネント外で定義（再レンダリング時の再生成を防止）
+const NAV_ITEMS: readonly NavItem[] = [
+  { path: '/', label: 'ホーム', icon: Home },
+  { path: '/dashboard', label: 'ダッシュボード', icon: Dashboard },
+  { path: '/colors', label: 'カラー', icon: ColorLens },
+  { path: '/tokens', label: 'トークン', icon: Token },
+  { path: '/buttons', label: 'ボタン', icon: SmartButton },
+  { path: '/components', label: 'コンポーネント', icon: Widgets },
+  { path: '/typography', label: 'タイポグラフィ', icon: TextFields },
+] as const;
 
 const AppNavigation: React.FC = () => {
   const location = useLocation();
   const { mode, toggleMode, primaryColor, setPrimaryColor } = useTheme();
   const [colorPickerAnchor, setColorPickerAnchor] = useState<HTMLButtonElement | null>(null);
-
-  const navItems = [
-    { path: '/', label: 'ホーム', icon: Home },
-    { path: '/dashboard', label: 'ダッシュボード', icon: Dashboard },
-    { path: '/colors', label: 'カラー', icon: ColorLens },
-    { path: '/tokens', label: 'トークン', icon: Token },
-    { path: '/buttons', label: 'ボタン', icon: SmartButton },
-    { path: '/components', label: 'コンポーネント', icon: Widgets },
-    { path: '/typography', label: 'タイポグラフィ', icon: TextFields },
-  ];
 
   const handleColorPickerOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setColorPickerAnchor(event.currentTarget);
@@ -54,6 +62,11 @@ const AppNavigation: React.FC = () => {
 
   const isColorPickerOpen = Boolean(colorPickerAnchor);
 
+  // 現在のパスが一致するかチェック（メモ化）
+  const isActive = useMemo(() => {
+    return (path: string) => location.pathname === path;
+  }, [location.pathname]);
+
   return (
     <AppBar position="sticky" elevation={1}>
       <Toolbar>
@@ -61,18 +74,20 @@ const AppNavigation: React.FC = () => {
           Material Design 3 + MUI 7
         </Typography>
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-          {navItems.map((item) => {
+          {NAV_ITEMS.map((item) => {
             const IconComponent = item.icon;
+            const active = isActive(item.path);
             return (
               <Button
                 key={item.path}
                 component={Link}
                 to={item.path}
                 color="inherit"
-                variant={location.pathname === item.path ? 'outlined' : 'text'}
+                variant={active ? 'outlined' : 'text'}
                 startIcon={<IconComponent />}
+                aria-current={active ? 'page' : undefined}
                 sx={{
-                  borderColor: location.pathname === item.path ? 'rgba(255, 255, 255, 0.5)' : 'transparent',
+                  borderColor: active ? 'rgba(255, 255, 255, 0.5)' : 'transparent',
                   display: { xs: 'none', md: 'flex' }, // モバイルでは非表示
                 }}
               >
@@ -80,11 +95,16 @@ const AppNavigation: React.FC = () => {
               </Button>
             );
           })}
-          
+
           {/* モバイル用のアイコンのみナビゲーション */}
-          <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 0.5 }}>
-            {navItems.map((item) => {
+          <Box
+            sx={{ display: { xs: 'flex', md: 'none' }, gap: 0.5 }}
+            component="nav"
+            aria-label="メインナビゲーション"
+          >
+            {NAV_ITEMS.map((item) => {
               const IconComponent = item.icon;
+              const active = isActive(item.path);
               return (
                 <Tooltip key={item.path} title={item.label}>
                   <IconButton
@@ -92,8 +112,10 @@ const AppNavigation: React.FC = () => {
                     to={item.path}
                     color="inherit"
                     size="small"
+                    aria-label={item.label}
+                    aria-current={active ? 'page' : undefined}
                     sx={{
-                      backgroundColor: location.pathname === item.path ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                      backgroundColor: active ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
                     }}
                   >
                     <IconComponent fontSize="small" />
@@ -106,8 +128,12 @@ const AppNavigation: React.FC = () => {
           {/* カラーピッカーボタン */}
           <Tooltip title="プライマリカラーを変更">
             <IconButton
+              id="color-picker-button"
               onClick={handleColorPickerOpen}
               color="inherit"
+              aria-label="プライマリカラーを変更"
+              aria-haspopup="dialog"
+              aria-expanded={isColorPickerOpen}
               sx={{ ml: 1 }}
             >
               <Palette />
@@ -139,11 +165,15 @@ const AppNavigation: React.FC = () => {
             vertical: 'top',
             horizontal: 'right',
           }}
+          aria-labelledby="color-picker-button"
         >
-          <AdvancedColorPicker
-            value={primaryColor}
-            onChange={handleColorChange}
-          />
+          {/* 条件付きレンダリング：開いている時のみマウント */}
+          {isColorPickerOpen && (
+            <AdvancedColorPicker
+              value={primaryColor}
+              onChange={handleColorChange}
+            />
+          )}
         </Popover>
       </Toolbar>
     </AppBar>
